@@ -40,7 +40,11 @@ pip install -r requirements.txt
 
 ## Handwritten Digit Recognition CNN Model
 
-This project includes a Convolutional Neural Network (CNN) model for recognizing handwritten digits (0-9), trained on PNG images.
+This project includes a Convolutional Neural Network (CNN) model for recognizing handwritten digits (0-9), trained on raw images. The dataset it was trained on has:
+- Training samples: 416126
+- Validation samples: 11453
+
+You can find the full dataset from this (link)[https://www.kaggle.com/datasets/vaibhao/handwritten-characters]
 
 ### Files
 
