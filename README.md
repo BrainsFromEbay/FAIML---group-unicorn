@@ -8,7 +8,56 @@
 
 # Mahi Talukder:
 
+## Dataset
+
 The dataset used for training can be found [on Kaggle](https://www.kaggle.com/datasets/vaibhao/handwritten-characters).
+
+The expected directory structure for the dataset is as follows:
+
+```
+├───Train/
+│   ├───@/
+│   ├───├───filename.png
+│   ├───├───...png
+│   ├───&/
+│   ├───#/
+│   ├───$/
+│   ├───0/
+│   ├───1/
+│   ├───2/
+│   ├───3/
+│   ├───4/
+│   ├───5/
+│   ├───6/
+│   ├───7/
+│   ├───8/
+│   ├───9/
+│   ├───A/
+│   ├───...
+│   ├───...
+│   └───Z/
+└───Validation/
+    ├───@/
+    ├───├───filenanme.png¨
+    ├───├───...png
+    ├───&/
+    ├───#/
+    ├───$/
+    ├───0/
+    ├───1/
+    ├───2/
+    ├───3/
+    ├───4/
+    ├───5/
+    ├───6/
+    ├───7/
+    ├───8/
+    ├───9/
+    ├───A/
+    ├───...
+    ├───...
+    └───Z/
+```
 
 ## Setup and Installation
 
@@ -62,7 +111,7 @@ This workflow trains a CNN model directly from PNG images of digits.
 
 #### Using the 28x28 Model
 
-The saved `digits_model_CNN__from_png.pth` can be used for inference on new images. The previous version of this README contained a full helper function. The key steps are to define the `SimpleCNN` architecture from the script and then load the state dictionary into it.
+The saved `digits_model_CNN__from_png.pth` can be used for inference on new images. The key steps are to define the `SimpleCNN` architecture from the script and then load the state dictionary into it.
 
 ---
 
@@ -75,26 +124,18 @@ This workflow preprocesses the PNG images and saves them into a single binary fi
 - **Output:** A file named `digits_data.pickle` containing the processed image data and labels.
 - **Inspection:** The `Mahi/inspect.ipynb` Jupyter Notebook can be used to load and visualize the data from `digits_data.pickle`.
 
+the digits_data.pickle file is too big to be uploaded by git push. Please download the file from [onedrive](google.com)
+
 ---
-
-### :warning: Important: Workflow Incompatibility
-
-The two workflows are **not compatible** with each other.
-
-- The model trained in Workflow 1 (`digits_CNN_from_png.py`) expects **28x28** pixel images.
-- The data processed in Workflow 2 (`raw_image_to_binary.py`) produces **32x32** pixel images.
-
-The `SimpleCNN` model architecture would need to be adjusted to work with the 32x32 data from the pickle file.
 
 ## File Descriptions
 
 - `README.md`: This file.
-- `environment.yml`: Conda environment dependencies.
-- `requirements.txt`: Pip package requirements.
+- `database_structure.md`: A file describing the expected dataset structure.
+- `Mahi/environment.yml`: Conda environment dependencies.
+- `Mahi/requirements.txt`: Pip package requirements.
 - `Mahi/digits_CNN_from_png.py`: Main script for **Workflow 1**. Trains the model on 28x28 PNGs.
 - `Mahi/digits_model_CNN__from_png.pth`: The trained model file from **Workflow 1**.
 - `Mahi/raw_image_to_binary.py`: Preprocessing script for **Workflow 2**. Generates a pickle file with 32x32 images.
 - `Mahi/digits_data.pickle`: The output of `raw_image_to_binary.py`.
 - `Mahi/inspect.ipynb`: A Jupyter Notebook to inspect the `digits_data.pickle` file.
-
----
