@@ -1,2 +1,3 @@
 Mahi/preprocessed/digits_data.pickle
 Mahi/preprocessed/digits_data_cleaned.pickle
+Mahi/preprocessed/rf_model.joblib
