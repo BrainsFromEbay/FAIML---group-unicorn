@@ -100,6 +100,7 @@ This project contains three distinct and currently incompatible workflows for ha
 ---
 
 ### Workflow 1: CNN model from raw image
+
 This workflow trains a CNN model directly from PNG images of digits.
 
 - **Script:** `Mahi/digits_CNN_from_raw_image.py`
@@ -139,7 +140,7 @@ This workflow preprocesses the PNG images and saves them into a single binary fi
 - **Output:** A file named `digits_data.pickle` containing the processed image data and labels.
 - **Inspection:** The `Mahi/inspect.ipynb` Jupyter Notebook can be used to load and visualize the data from `digits_data.pickle`.
 
-the digits_data.pickle file is too big to be uploaded by git push. Please download the file from [onedrive](google.com)
+the digits_data.pickle file is too big to be uploaded by git push. Please download the file from [google drive](https://drive.google.com/file/d/1JJ9WHbLCZDNVymFtcXM1cAB6A6tGdMk6/view?usp=sharing)
 
 ---
 
