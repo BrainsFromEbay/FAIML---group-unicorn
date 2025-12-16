@@ -6,7 +6,6 @@ __pycache__/
 .vscode/
 .idea/
 
-letterRecognition/my_digit.py
 cnn_mnist.pth
 
 .DS_Store
