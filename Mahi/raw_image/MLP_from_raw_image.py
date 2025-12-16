@@ -7,24 +7,13 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 
-# -----------------------------
-# GPU Setup
-# -----------------------------
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"Using device: {device}")
 if device.type == 'cuda':
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 
-# -----------------------------
-# 1. Only Digits 0-9 (10 classes)
-# -----------------------------
 class_names = [str(i) for i in range(10)]  # '0','1',...,'9'
 num_classes = 10
-print(f"Training on digits only: {class_names}")
 
-# -----------------------------
-# 2. Custom Dataset (only loads digit folders)
-# -----------------------------
 class DigitDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
@@ -53,7 +42,7 @@ class DigitDataset(Dataset):
     
     def __getitem__(self, idx):
         img_path = self.images[idx]
-        image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)  # Grayscale
+        image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         image = Image.fromarray(image)
         
         label = self.labels[idx]
@@ -63,12 +52,9 @@ class DigitDataset(Dataset):
         
         return image, label
 
-# -----------------------------
-# 3. Transforms: Resize + Flatten later in model
-# -----------------------------
 transform = transforms.Compose([
-    transforms.Resize((28, 28)),   # All images become 28x28
-    transforms.ToTensor(),         # Converts to [1, 28, 28] tensor with values 0-1
+    transforms.Resize((28, 28)),  
+    transforms.ToTensor(),         
 ])
 
 train_dataset = DigitDataset(root_dir='Train', transform=transform)
@@ -81,41 +67,32 @@ val_loader   = DataLoader(val_dataset,   batch_size=batch_size, shuffle=False)
 print(f"Training samples: {len(train_dataset)}")
 print(f"Validation samples: {len(val_dataset)}")
 
-# -----------------------------
-# 4. Simple MLP (Fully Connected Neural Network)
-# -----------------------------
 class SimpleMLP(nn.Module):
     def __init__(self, input_size=28*28, hidden_size=128, num_classes=10):
         super(SimpleMLP, self).__init__()
         self.network = nn.Sequential(
-            nn.Flatten(),              # Turn 1x28x28 image into 784 vector
+            nn.Flatten(),              
             nn.Linear(input_size, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
-            nn.Linear(hidden_size, num_classes)  # Output 10 scores (one per digit)
+            nn.Linear(hidden_size, num_classes)  
         )
     
     def forward(self, x):
         return self.network(x)
 
-# Create model and send to GPU
 model = SimpleMLP().to(device)
 print(model)
 
-# Count parameters (should be small!)
 total_params = sum(p.numel() for p in model.parameters())
 print(f"Total parameters: {total_params:,}")
 
-# -----------------------------
-# 5. Loss and Optimizer
-# -----------------------------
+
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# -----------------------------
-# 6. Training Loop
-# -----------------------------
+
 def train_one_epoch():
     model.train()
     running_loss = 0.0
@@ -126,10 +103,10 @@ def train_one_epoch():
         images, labels = images.to(device), labels.to(device)
         
         optimizer.zero_grad()
-        outputs = model(images)          # Forward pass
+        outputs = model(images)          
         loss = criterion(outputs, labels)
-        loss.backward()                  # Compute gradients
-        optimizer.step()                 # Update weights
+        loss.backward()                 
+        optimizer.step()                 
         
         running_loss += loss.item()
         _, predicted = torch.max(outputs, 1)
@@ -153,9 +130,6 @@ def validate():
     
     return correct / total
 
-# -----------------------------
-# 7. Train!
-# -----------------------------
 num_epochs = 15
 
 for epoch in range(num_epochs):
@@ -168,7 +142,6 @@ for epoch in range(num_epochs):
     print("-" * 50)
 
 torch.save(model.state_dict(), 'digits_model_MLP_from_raw_image.pth')
-print("MLP model saved!")
 
 # -----------------------------
 # 8. Predict a single image

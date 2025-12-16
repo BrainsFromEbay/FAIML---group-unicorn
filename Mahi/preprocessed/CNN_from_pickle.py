@@ -7,7 +7,7 @@ import numpy as np
 import time
 from torch.cuda.amp import GradScaler, autocast
 
-PICKLE_FILE = "./Mahi/digits_data_cleaned.pickle"
+PICKLE_FILE = "./Mahi/preprocessed/digits_data_cleaned.pickle"
 BATCH_SIZE = 128
 NUM_EPOCHS = 15
 LEARNING_RATE = 0.001
@@ -151,4 +151,4 @@ if __name__ == '__main__':
     print(f"\nTraining completed in {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
     print(f"Best validation accuracy: {best_val_acc:.2f}%")
 
-    torch.save(model, "simple_digit_cnn_full.pth")
+    torch.save(model, "Mahi/preprocessed/CNN_digit_full.pth")
