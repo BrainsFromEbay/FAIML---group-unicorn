@@ -3,12 +3,9 @@ import os
 import cv2
 import pickle
 
-# --- Configuration ---
-# Set the path where your folders are located
 BASE_DIR = "."  # Change this if your script is not in the same folder as 'Train'/'Validation'
 IMG_SIZE = 32   # Resize images to 32x32 (standardizing size is required for models)
 
-# We only want digits for now
 CATEGORIES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 def create_data(data_type):
@@ -58,7 +55,6 @@ def create_data(data_type):
     print(f"Finished {data_type}. Total images: {len(X)}")
     return X, y
 
-# --- Execution ---
 
 # 1. Process Training Data
 X_train, y_train = create_data("Train")
@@ -66,7 +62,6 @@ X_train, y_train = create_data("Train")
 # 2. Process Validation Data
 X_val, y_val = create_data("Validation")
 
-# --- Saving to Pickle ---
 
 print("Saving data to pickle files...")
 
