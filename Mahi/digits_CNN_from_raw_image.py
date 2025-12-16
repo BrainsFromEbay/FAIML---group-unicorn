@@ -152,4 +152,4 @@ for epoch in range(num_epochs):
     print(f"  Val   Loss: {val_loss:.4f} | Val   Acc: {val_acc:.4f}")
     print("-" * 50)
 
-torch.save(model.state_dict(), 'digits_model.pth')
+torch.save(model.state_dict(), 'digits_model_CNN_from_raw_image.pth')

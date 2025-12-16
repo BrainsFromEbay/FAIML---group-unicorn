@@ -95,27 +95,42 @@ pip install -r requirements.txt
 
 ## Project Workflows
 
-This project contains two distinct and currently incompatible workflows for handling image data.
+This project contains three distinct and currently incompatible workflows for handling image data.
 
 ---
 
-### Workflow 1: Direct PNG Training (28x28 Images)
-
+### Workflow 1: CNN model from raw image
 This workflow trains a CNN model directly from PNG images of digits.
 
-- **Script:** `Mahi/digits_CNN_from_png.py`
+- **Script:** `Mahi/digits_CNN_from_raw_image.py`
 - **Process:** The script reads images from `Train/` and `Validation/` directories, resizes them to **28x28 pixels**, and uses them to train a `SimpleCNN` model. The dataset it was trained on has:
   - Training samples: 416126
   - Validation samples: 11453
-- **Output:** The trained model is saved as `Mahi/digits_model_CNN__from_png.pth`.
+- **Output:** The trained model is saved as `Mahi/digits_model_CNN_from_raw_image.pth`.
 
 #### Using the 28x28 Model
 
-The saved `digits_model_CNN__from_png.pth` can be used for inference on new images. The key steps are to define the `SimpleCNN` architecture from the script and then load the state dictionary into it.
+The saved `digits_model_CNN_from_raw_image.pth` can be used for inference on new images. The key steps are to define the `SimpleCNN` architecture from the script and then load the state dictionary into it.
 
 ---
 
-### Workflow 2: Preprocessing to Pickle (32x32 Images)
+### Workflow 2: MLP model from raw image
+
+This workflow trains a MLP model directly from PNG images of digits.
+
+- **Script:** `Mahi/digits_model_MLP_from_raw_image.py`
+- **Process:** The script reads images from `Train/` and `Validation/` directories, resizes them to **28x28 pixels**, and uses them to train a `SimpleMLP` model. The dataset it was trained on has:
+  - Training samples: 86968
+  - Validation samples: 11453
+- **Output:** The trained model is saved as `Mahi/digits_model_MLP_from_raw_image.pth`.
+
+#### Using the 28x28 Model
+
+The saved `digits_model_MLP_from_raw_image.pth` can be used for inference on new images. The key steps are to define the `SimpleMLP` architecture from the script and then load the state dictionary into it.
+
+---
+
+### Workflow 3: Preprocessing to Pickle (32x32 Images)
 
 This workflow preprocesses the PNG images and saves them into a single binary file.
 
@@ -131,11 +146,12 @@ the digits_data.pickle file is too big to be uploaded by git push. Please downlo
 ## File Descriptions
 
 - `README.md`: This file.
-- `database_structure.md`: A file describing the expected dataset structure.
 - `Mahi/environment.yml`: Conda environment dependencies.
 - `Mahi/requirements.txt`: Pip package requirements.
-- `Mahi/digits_CNN_from_png.py`: Main script for **Workflow 1**. Trains the model on 28x28 PNGs.
-- `Mahi/digits_model_CNN__from_png.pth`: The trained model file from **Workflow 1**.
-- `Mahi/raw_image_to_binary.py`: Preprocessing script for **Workflow 2**. Generates a pickle file with 32x32 images.
+- `Mahi/digits_CNN_from_raw_image.py`: Main script for **Workflow 1**. Trains the CNN model on 28x28 PNGs.
+- `Mahi/digits_model_CNN_from_raw_image.pth`: The trained model file from **Workflow 1**.
+- `Mahi/digits_model_MLP_from_raw_image.py`: Main script for **Workflow 2**. Trains the MLP model on 28x28 PNGs.
+- `Mahi/digits_model_MLP_from_raw_image.pth`: The trained model file from **Workflow 2**.
+- `Mahi/raw_image_to_binary.py`: Preprocessing script for **Workflow 3**. Generates a pickle file with 32x32 images.
 - `Mahi/digits_data.pickle`: The output of `raw_image_to_binary.py`.
 - `Mahi/inspect.ipynb`: A Jupyter Notebook to inspect the `digits_data.pickle` file.
