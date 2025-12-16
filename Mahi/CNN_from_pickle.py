@@ -5,36 +5,31 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import time
-from torch.cuda.amp import GradScaler, autocast  # For mixed precision
+from torch.cuda.amp import GradScaler, autocast
 
-# ==================== Configuration ====================
 PICKLE_FILE = "./Mahi/digits_data_cleaned.pickle"
-BATCH_SIZE = 128          # Reduced for 6GB VRAM - safe and fast
+BATCH_SIZE = 128
 NUM_EPOCHS = 15
 LEARNING_RATE = 0.001
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {DEVICE}")
 
-# ==================== Custom Dataset (On-the-fly normalization) ====================
 class DigitsDataset(Dataset):
     def __init__(self, X, y):
-        self.X = X  # Keep as uint8 to save RAM
+        self.X = X
         self.y = y.astype(np.int64)
 
     def __len__(self):
         return len(self.y)
 
     def __getitem__(self, idx):
-        image = self.X[idx]  # (32, 32, 1) uint8
+        image = self.X[idx]
         label = self.y[idx]
 
-        # Normalize to [0,1] and convert to float32 only here
         image = torch.tensor(image, dtype=torch.float32) / 255.0
         image = image.permute(2, 0, 1)  # (1, 32, 32)
 
         return image, label
 
-# ==================== Simple CNN Model (unchanged) ====================
 class SimpleDigitCNN(nn.Module):
     def __init__(self, num_classes=10):
         super(SimpleDigitCNN, self).__init__()
@@ -67,8 +62,6 @@ class SimpleDigitCNN(nn.Module):
         x = self.classifier(x)
         return x
 
-# ==================== Load Data ====================
-print("Loading cleaned dataset...")
 with open(PICKLE_FILE, 'rb') as f:
     data = pickle.load(f)
 
@@ -86,17 +79,15 @@ val_dataset = DigitsDataset(X_val, y_val)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
 
-# ==================== Model, Loss, Optimizer, Scaler ====================
 model = SimpleDigitCNN(num_classes=10).to(DEVICE)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-scaler = GradScaler()  # For mixed precision
+scaler = GradScaler()
 
 print(model)
 total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print(f"Total trainable parameters: {total_params:,}")
 
-# ==================== Training Functions (with AMP) ====================
 def train_epoch():
     model.train()
     running_loss = 0.0
@@ -108,7 +99,7 @@ def train_epoch():
         
         optimizer.zero_grad()
         
-        with autocast():  # Mixed precision
+        with autocast():
             outputs = model(images)
             loss = criterion(outputs, labels)
         
@@ -141,9 +132,7 @@ def validate():
     acc = 100. * correct / total
     return acc
 
-# ==================== Start Training ====================
 if __name__ == '__main__':
-    print("\nStarting training with mixed precision (low VRAM mode)...\n")
     start_time = time.time()
 
     best_val_acc = 0.0
@@ -161,7 +150,5 @@ if __name__ == '__main__':
     total_time = time.time() - start_time
     print(f"\nTraining completed in {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
     print(f"Best validation accuracy: {best_val_acc:.2f}%")
-    print("Best model saved as 'best_digit_model.pth'")
 
     torch.save(model, "simple_digit_cnn_full.pth")
-    print("Full model saved as 'simple_digit_cnn_full.pth'")
