@@ -1,7 +1,5 @@
 # Mahi Talukder:
 
-First set "Mahi/" folder as working directory or root folder.
-
 ## Dataset
 
 The dataset used for training can be found [on Kaggle](https://www.kaggle.com/datasets/vaibhao/handwritten-characters).
@@ -142,6 +140,14 @@ This is a more advanced pipeline that involves preprocessing the images into a b
   - `best_digit_model.pth`: The model state dictionary that achieved the highest validation accuracy during training (saved in the project root).
   - `Mahi/preprocessed/CNN_digit_full.pth`: The complete, saved PyTorch model object from the last epoch.
 
+#### Workflow 6: MLP from Cleaned Pickle Data
+
+- **Script:** `Mahi/preprocessed/MLP_from_pickle.py`
+- **Process:** This script loads the cleaned data from `Mahi/preprocessed/digits_data_cleaned.pickle` and trains a `SimpleMLP` model. It flattens the 32x32 images and uses a series of fully connected layers. Like the CNN workflow, it uses mixed-precision for efficiency.
+- **Input:** `Mahi/preprocessed/digits_data_cleaned.pickle`
+- **Output:**
+  - `Mahi/preprocessed/mlp_full.pth`: The complete, saved PyTorch model object from the last epoch.
+
 ---
 
 ## File Descriptions
@@ -157,6 +163,7 @@ This is a more advanced pipeline that involves preprocessing the images into a b
   - `Mahi/preprocessed/raw_image_to_binary.py`: (Workflow 3) Preprocesses 32x32 digit images into `Mahi/preprocessed/digits_data.pickle`.
   - `Mahi/preprocessed/pickle_clean.py`: (Workflow 4) Cleans `Mahi/preprocessed/digits_data.pickle` and saves `Mahi/preprocessed/digits_data_cleaned.pickle`.
   - `Mahi/preprocessed/CNN_from_pickle.py`: (Workflow 5) Trains a CNN on the cleaned 32x32 pickle data.
+  - `Mahi/preprocessed/MLP_from_pickle.py`: (Workflow 6) Trains an MLP on the cleaned 32x32 pickle data.
 
 - **Model Files:**
 
@@ -164,6 +171,7 @@ This is a more advanced pipeline that involves preprocessing the images into a b
   - `Mahi/raw_image/MLP_from_raw_image.pth`: Trained model from **Workflow 2**.
   - `best_digit_model.pth`: Best-performing model state from **Workflow 5** (saved in project root).
   - `Mahi/preprocessed/CNN_digit_full.pth`: Full model saved at the end of **Workflow 5**.
+  - `Mahi/preprocessed/mlp_full.pth`: Full model saved at the end of **Workflow 6**.
 
 - **Data Files:**
 
