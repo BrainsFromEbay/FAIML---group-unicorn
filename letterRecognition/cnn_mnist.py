@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 import os
+import glob
 
 # Thoughts and prayers if you run this on a CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -14,6 +15,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 batch_size = 64
 learning_rate = 0.001
 num_epochs = 10
+
+folder_path = r"letterRecognition/digits"
+image_paths = glob.glob(os.path.join(folder_path, "*.png"))
 
 # Convert image to tensor and normalize to [0,1]
 transform = transforms.Compose([
@@ -139,42 +143,3 @@ if TRAIN:
     plt.ylabel("Loss")
     plt.title("Training Loss Curve")
     plt.show()
-
-def predict_image(image_path, model, device):
-    import matplotlib.pyplot as plt
-
-    model.eval()
-
-    image = Image.open(image_path).convert('L')
-    image = np.array(image)
-
-    if image.mean() < 127:
-        image = 255 - image
-
-    coords = np.column_stack(np.where(image < 255))
-    if coords.size > 0:
-        y0, x0 = coords.min(axis=0)
-        y1, x1 = coords.max(axis=0)
-        image = image[y0:y1+1, x0:x1+1]
-
-    image = Image.fromarray(image).resize((28, 28))
-
-    image = np.array(image) / 255.0
-    image = (image - 0.5) / 0.5 
-
-    image = torch.tensor(image, dtype=torch.float32)
-    image = image.unsqueeze(0).unsqueeze(0).to(device)
-
-    plt.imshow(image.cpu().squeeze(), cmap="gray")
-    plt.title("Input Image")
-    plt.axis('off')
-    plt.show()
-
-    with torch.no_grad():
-        output = model(image)
-        prediction = torch.argmax(output, dim=1).item()
-
-    return prediction
-
-pred = predict_image(r"letterRecognition\my_digit.png", model, device)
-print(f"Predicted Digit: {pred}")
