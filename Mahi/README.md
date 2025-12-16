@@ -146,7 +146,16 @@ This is a more advanced pipeline that involves preprocessing the images into a b
 - **Process:** This script loads the cleaned data from `Mahi/preprocessed/digits_data_cleaned.pickle` and trains a `SimpleMLP` model. It flattens the 32x32 images and uses a series of fully connected layers. Like the CNN workflow, it uses mixed-precision for efficiency.
 - **Input:** `Mahi/preprocessed/digits_data_cleaned.pickle`
 - **Output:**
+  - `Mahi/preprocessed/best_mlp_model.pth`: The model state dictionary that achieved the highest validation accuracy during training.
   - `Mahi/preprocessed/mlp_full.pth`: The complete, saved PyTorch model object from the last epoch.
+
+#### Workflow 7: Random Forest from Cleaned Pickle Data
+
+- **Script:** `Mahi/preprocessed/random_forrest.py`
+- **Process:** This script loads the cleaned data from `Mahi/preprocessed/digits_data_cleaned.pickle`, flattens the 32x32 images, and trains a `RandomForestClassifier` model using Scikit-learn. It uses all available CPU cores for efficiency.
+- **Input:** `Mahi/preprocessed/digits_data_cleaned.pickle`
+- **Output:**
+  - `Mahi/preprocessed/rf_model.joblib`: The complete, saved Scikit-learn model object.
 
 ---
 
@@ -164,6 +173,7 @@ This is a more advanced pipeline that involves preprocessing the images into a b
   - `Mahi/preprocessed/pickle_clean.py`: (Workflow 4) Cleans `Mahi/preprocessed/digits_data.pickle` and saves `Mahi/preprocessed/digits_data_cleaned.pickle`.
   - `Mahi/preprocessed/CNN_from_pickle.py`: (Workflow 5) Trains a CNN on the cleaned 32x32 pickle data.
   - `Mahi/preprocessed/MLP_from_pickle.py`: (Workflow 6) Trains an MLP on the cleaned 32x32 pickle data.
+  - `Mahi/preprocessed/random_forrest.py`: (Workflow 7) Trains a Random Forest classifier on the cleaned 32x32 pickle data.
 
 - **Model Files:**
 
@@ -171,7 +181,9 @@ This is a more advanced pipeline that involves preprocessing the images into a b
   - `Mahi/raw_image/MLP_from_raw_image.pth`: Trained model from **Workflow 2**.
   - `best_digit_model.pth`: Best-performing model state from **Workflow 5** (saved in project root).
   - `Mahi/preprocessed/CNN_digit_full.pth`: Full model saved at the end of **Workflow 5**.
+  - `Mahi/preprocessed/best_mlp_model.pth`: Best-performing model state from **Workflow 6**.
   - `Mahi/preprocessed/mlp_full.pth`: Full model saved at the end of **Workflow 6**.
+  - `Mahi/preprocessed/rf_model.joblib`: Trained Random Forest model from **Workflow 7**.
 
 - **Data Files:**
 
