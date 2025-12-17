@@ -36,24 +36,20 @@ class SimpleCNN(nn.Module):
     
 def preprocess_image(image_path):
     image = Image.open(image_path).convert("L")
+
+    image = image.resize((28, 28), Image.BILINEAR)
+
     image = np.array(image)
 
-    if image.mean() < 127:
+    if image.mean() > 127:
         image = 255 - image
 
-    coords = np.column_stack(np.where(image < 255))
-    if coords.size > 0:
-        y0, x0 = coords.min(axis=0)
-        y1, x1 = coords.max(axis=0) + 1
-        image = image[y0:y1, x0:x1]
-
-    image = Image.fromarray(image).resize((28, 28))
-
-    image = np.array(image) / 255.0
+    image = image.astype(np.float32) / 255.0
     image = (image - 0.5) / 0.5
 
     image = torch.tensor(image, dtype=torch.float32)
     image = image.unsqueeze(0).unsqueeze(0)
+    
     return image
 
 def predict_image(image_path, model, device, show_image=True):

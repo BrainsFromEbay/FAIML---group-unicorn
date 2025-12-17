@@ -21,6 +21,11 @@ image_paths = glob.glob(os.path.join(folder_path, "*.png"))
 
 # Convert image to tensor and normalize to [0,1]
 transform = transforms.Compose([
+    transforms.RandomAffine(
+        degrees=15,
+        translate=(0.1, 0.1),
+        scale=(0.9, 1.1)
+    ),
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
