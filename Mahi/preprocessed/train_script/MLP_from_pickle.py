@@ -7,13 +7,13 @@ import numpy as np
 import time
 from torch.cuda.amp import GradScaler, autocast
 
-PICKLE_FILE = "./Mahi/preprocessed/digits_data_cleaned.pickle"
-BATCH_SIZE = 128
-NUM_EPOCHS = 15
+PICKLE_FILE = "Mahi/preprocessed/digits_data_cleaned.pickle"
+BATCH_SIZE = 256
+NUM_EPOCHS = 20
 LEARNING_RATE = 0.001
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class DigitsDataset(Dataset):
+class DigitsDatasetMLP(Dataset):
     def __init__(self, X, y):
         self.X = X
         self.y = y.astype(np.int64)
@@ -23,44 +23,32 @@ class DigitsDataset(Dataset):
 
     def __getitem__(self, idx):
         image = self.X[idx]
-        label = self.y[idx]
-
+        image = image.reshape(-1)
         image = torch.tensor(image, dtype=torch.float32) / 255.0
-        image = image.permute(2, 0, 1)  # (1, 32, 32)
-
+        
+        label = self.y[idx]
         return image, label
 
-class SimpleDigitCNN(nn.Module):
-    def __init__(self, num_classes=10):
-        super(SimpleDigitCNN, self).__init__()
-        
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(32, 32, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),
-            
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(64, 64, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),
-        )
-        
-        self.classifier = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(64 * 8 * 8, 128),
-            nn.ReLU(inplace=True),
+class SimpleMLP(nn.Module):
+    def __init__(self, input_size=32*32, num_classes=10):
+        super(SimpleMLP, self).__init__()
+        self.network = nn.Sequential(
+            nn.Linear(input_size, 512),
+            nn.ReLU(),
             nn.Dropout(0.3),
+            
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            
             nn.Linear(128, num_classes)
         )
 
     def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x = self.classifier(x)
-        return x
+        return self.network(x)
 
 with open(PICKLE_FILE, 'rb') as f:
     data = pickle.load(f)
@@ -73,13 +61,13 @@ y_val = data['y_val']
 print(f"Training samples: {len(y_train)}")
 print(f"Validation samples: {len(y_val)}")
 
-train_dataset = DigitsDataset(X_train, y_train)
-val_dataset = DigitsDataset(X_val, y_val)
+train_dataset = DigitsDatasetMLP(X_train, y_train)
+val_dataset = DigitsDatasetMLP(X_val, y_val)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=True)
 
-model = SimpleDigitCNN(num_classes=10).to(DEVICE)
+model = SimpleMLP().to(DEVICE)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 scaler = GradScaler()
@@ -129,12 +117,10 @@ def validate():
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
     
-    acc = 100. * correct / total
-    return acc
+    return 100. * correct / total
 
 if __name__ == '__main__':
     start_time = time.time()
-
     best_val_acc = 0.0
 
     for epoch in range(1, NUM_EPOCHS + 1):
@@ -143,12 +129,12 @@ if __name__ == '__main__':
         
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            torch.save(model.state_dict(), "best_digit_model.pth")
+            torch.save(model.state_dict(), "Mahi/preprocessed/models/best_mlp_model.pth")
         
         print(f"Epoch {epoch:02d} | Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}% | Val Acc: {val_acc:.2f}%")
 
     total_time = time.time() - start_time
-    print(f"\nTraining completed in {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
+    print(f"\nMLP Training completed in {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
     print(f"Best validation accuracy: {best_val_acc:.2f}%")
 
-    torch.save(model, "Mahi/preprocessed/CNN_digit_full.pth")
+    torch.save(model, "Mahi/preprocessed/models/mlp_full.pth")

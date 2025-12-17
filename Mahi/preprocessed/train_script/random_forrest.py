@@ -6,7 +6,7 @@ import joblib
 import time
 
 PICKLE_FILE = "Mahi/preprocessed/digits_data_cleaned.pickle"
-MODEL_FILE = "Mahi/preprocessed/rf_model.joblib"
+MODEL_FILE = "Mahi/preprocessed/models/rf_model.joblib"
 
 with open(PICKLE_FILE, 'rb') as f:
     data = pickle.load(f)
