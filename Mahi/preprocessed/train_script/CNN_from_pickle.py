@@ -143,7 +143,7 @@ if __name__ == '__main__':
         
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            torch.save(model.state_dict(), "best_digit_model.pth")
+            torch.save(model.state_dict(), "Mahi/preprocessed/models/best_digit_model.pth")
         
         print(f"Epoch {epoch:02d} | Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}% | Val Acc: {val_acc:.2f}%")
 

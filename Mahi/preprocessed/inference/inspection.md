@@ -1,40 +1,19 @@
 
 ```python
 with open("../digits_data_cleaned.pickle", "rb") as f:
-
-    clean_data = pickle.load(f)
+  clean_data = pickle.load(f)
 
 print(f"\nKeys found in the pickle file: {list(clean_data.keys())}")
-
-
 X_train_clean = clean_data["X_train"]
-
-  
 y_train_clean = clean_data["y_train"]
-
-  
 X_val_clean = clean_data["X_val"]
-
-
 y_val_clean = clean_data["y_val"]
-
-
 categories_clean = clean_data["categories"]
-
-
 print("\n--- Data Structure & Shapes ---")
-
-
 print(f"X_train shape: {X_train_clean.shape}")
-
-
 print(f"y_train shape: {y_train_cleean.shape}")
-
-
-print(f"X_val shape:   {X_val_clean.shape}")
-
-
-print(f"y_val shape:   {y_val_clean.shape}")
+print(f"X_val shape: {X_val_clean.shape}")
+print(f"y_val shape: {y_val_clean.shape}")
 ```
 
 ## output:
@@ -42,22 +21,17 @@ print(f"y_val shape:   {y_val_clean.shape}")
 --- Data Structure & Shapes ---
 X_train shape: (416126, 32, 32, 1)
 y_train shape: (416126,)
-X_val shape:   (11453, 32, 32, 1)
-y_val shape:   (11453,)
+X_val shape: (11453, 32, 32, 1)
+y_val shape: (11453,)
 ```
 
 
 ```python
 print("\n--- Shape Explanation ---")
-
 print(f"For X_train {X_train_clean.shape}:")
-
 print(f"  {X_train_clean.shape[0]} -> Number of images (Batch size)")
-
 print(f"  {X_train_clean.shape[1]} -> Image Height (Pixels)")  
-
 print(f"  {X_train_clean.shape[2]} -> Image Width (Pixels)")
-
 print(f"  {X_train_clean.shape[3]} -> Color Channels (1 = Grayscale)")
 ```
 ## output:
@@ -73,15 +47,10 @@ For X_train (416126, 32, 32, 1):
 
 ```python
 print("\n--- Content Inspection (First Training Image) ---")
-
 print(f"Data Type: {X_train_clean.dtype}")
-
 print(f"Min Value: {X_train_clean.min()}")
-
 print(f"Max Value: {X_train_clean.max()}")
-
 print(f"Label Index: {y_train_clean[0]}")
-
 print(f"Label Name:  {categories_clean[y_train_clean[0]]}")
 ```
 ## output:
@@ -97,12 +66,9 @@ Label Name:  0
 
 ```python
 clean_grid = X_train_clean[0].reshape(32, 32)
-
 np.set_printoptions(linewidth=200, edgeitems=4)
-
 with np.printoptions(threshold=np.inf):
-
-    print(clean_grid)
+  print(clean_grid)
 ```
 ## output:
 ```
