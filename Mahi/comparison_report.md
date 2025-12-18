@@ -6,17 +6,17 @@ This report summarizes the performance of five different machine learning models
 
 The following table shows the predictions of each model for every image in the `custom_test` folder. A checkmark (✅) indicates a correct prediction, while a cross (❌) indicates an incorrect one.
 
-| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` |
-| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: |
-| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                |
-| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                |
-| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                |
-| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                |
-| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                |
-| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                |
-| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                |
-| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                |
-| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                |
+| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` |
+| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: |
+| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     |
+| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     |
+| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     |
+| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     |
+| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     |
+| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     |
+| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     |
+| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     |
+| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     |
 
 ---
 
@@ -27,6 +27,7 @@ This table ranks the models from best to worst based on their accuracy on the te
 | Rank | Script / Model | Correct | Total | Accuracy |
 | :--: | :--- | :-----: | :---: | :------: |
 | 1    | `cnn_raw_inference.py` (`CNN_from_raw_image.pth`) | 6       | 9     | **66.7%**  |
+| 1 (Tie)| `inference_custom_mlp_improved.py` (`best_mlp_improved.pth`) | 6 | 9 | **66.7%** |
 | 2    | `cnn_inference.py` (`CNN_digit_full.pth`) | 5       | 9     | **55.6%**  |
 | 3    | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
 | 4    | `rf_inference.py` (`rf_model.joblib`) | 3       | 9     | **33.3%**  |
@@ -37,7 +38,9 @@ This table ranks the models from best to worst based on their accuracy on the te
 ## Analysis
 
 ### Key Observations:
-1.  **CNNs Outperform All Other Models:** The two Convolutional Neural Network (CNN) models (`cnn_raw_inference` and `cnn_inference`) were the clear winners, achieving the highest and second-highest accuracy. This is expected, as CNNs are architecturally designed for image recognition tasks and are generally superior to MLPs and traditional machine learning models like Random Forest for this purpose.
+1.  **Improved MLP Rivals CNN:** The new `mlp_inference_improved` model achieved **66.7% accuracy**, tying with the best performing CNN. This proves that with proper data augmentation, regularization, and architecture tuning, MLPs can be highly effective for this task. It correctly identified image `4.png` which all other models failed on.
+
+2.  **CNNs Outperform All Other Models:** (Previous Note: While the improved MLP caught up, the standard CNNs were still historically strong). The two Convolutional Neural Network (CNN) models (`cnn_raw_inference` and `cnn_inference`) were the clear winners (until the improved MLP), achieving the highest and second-highest accuracy.
 
 2.  **"Raw" vs. "Preprocessed" Training Data:**
     *   The models trained on data from the `raw_image` directory (`cnn_raw_inference`, `mlp_raw_inference`) required specific preprocessing (inversion, thresholding) to work with the `custom_test` images.
