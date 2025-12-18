@@ -6,17 +6,17 @@ This report summarizes the performance of five different machine learning models
 
 The following table shows the predictions of each model for every image in the `custom_test` folder. A checkmark (✅) indicates a correct prediction, while a cross (❌) indicates an incorrect one.
 
-| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` | `cnn_inference_improved` | `cnn_full_improved` |
-| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: | :----------------------: | :----------------------: |
-| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     | 2 ❌                     | 2 ❌ |
-| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     | 7 ❌                     | 7 ❌ |
-| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     | 7 ❌                     | 7 ❌ |
-| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     | 3 ✅                     | 3 ✅ |
-| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     | 7 ❌                     | 7 ❌ |
-| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     | 5 ✅                     | 5 ✅ |
-| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     | 5 ❌                     | 5 ❌ |
-| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     | 7 ✅                     | 7 ✅ |
-| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     | 9 ✅                     | 9 ✅ |
+| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` | `cnn_inference_improved` | `cnn_full_improved` | `cnn_refined_inference` |
+| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: | :----------------------: | :----------------------: | :--------------------------: |
+| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     | 2 ❌                     | 2 ❌ | 8 ❌ |
+| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     | 7 ❌                     | 7 ❌ | 4 ❌ |
+| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     | 7 ❌                     | 7 ❌ | 2 ✅ |
+| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     | 3 ✅                     | 3 ✅ | 3 ✅ |
+| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     | 7 ❌                     | 7 ❌ | 7 ❌ |
+| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     | 5 ✅                     | 5 ✅ | 3 ❌ |
+| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     | 5 ❌                     | 5 ❌ | 5 ❌ |
+| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     | 7 ✅                     | 7 ✅ | 7 ✅ |
+| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     | 9 ✅                     | 9 ✅ | 9 ✅ |
 
 ---
 
@@ -31,7 +31,8 @@ This table ranks the models from best to worst based on their accuracy on the te
 | 3    | `cnn_inference.py` (`CNN_digit_full.pth`) | 5       | 9     | **55.6%**  |
 | 4    | `inference_custom_cnn_improved.py` (`best_cnn_improved.pth`) | 4 | 9 | **44.4%** |
 | 4 (Tie)| `cnn_full_improved.pth` | 4 | 9 | **44.4%** |
-| 6    | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
+| 4 (Tie)| `inference_cnn_refined.py` (`best_cnn_refined.pth`) | 4 | 9 | **44.4%** |
+| 7    | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
 | 4    | `rf_inference.py` (`rf_model.joblib`) | 3       | 9     | **33.3%**  |
 | 5    | `mlp_raw_inference.py` (`MLP_from_raw_image.pth`) | 2       | 9     | **22.2%**  |
 
@@ -67,3 +68,5 @@ The improved CNN model (`best_cnn_improved.pth` and `cnn_full_improved.pth`) ach
 1.  **Over-Regularization/Augmentation Mismatch:** The huge gap between Train/Val (99%) and Custom Test (44%) often indicates that the augmentation (rotation/shifting) made the model expect "messy" data, while the custom test set (after 50-value threshold cleaning) was "too clean" or simply different.
 2.  **Architecture:** The original CNN had dense layers (`Linear(64*8*8, 128)`). The improved CNN replaced this with `AdaptiveAvgPool` + `Linear(64, 32)`. While this is theoretically better for preventing overfitting (reducing params), it may have removed the specific "rote memorization" capacity that actually helped classify these specific, clean custom images. The original model could "memorize" the spatial layout of specific digits better.
 3.  **Thresholding:** The cleaning step (setting <50 to 0) might be removing subtle edges that the Global Average Pooling layer requires to differentiate shapes, whereas the Dense layer in the original model could just look at specific pixel coordinates.
+
+Despite attempts to **refine the CNN** (Reverting to Dense layers, using raw data, mild augmentation, and optimized training), the accuracy on the custom test set remained at **44.4%**. However, the *type* of errors changed (e.g., 5 kept failing, but 2 became correct). The incredibly high Validation Accuracy (**99.8%**) confirms the model is learning the training distribution perfectly. The persistent low score on `custom_test` confirms a **distribution shift** between the pickle dataset and your specific custom images.
