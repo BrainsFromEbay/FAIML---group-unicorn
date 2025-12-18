@@ -6,17 +6,17 @@ This report summarizes the performance of five different machine learning models
 
 The following table shows the predictions of each model for every image in the `custom_test` folder. A checkmark (✅) indicates a correct prediction, while a cross (❌) indicates an incorrect one.
 
-| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` |
-| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: |
-| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     |
-| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     |
-| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     |
-| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     |
-| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     |
-| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     |
-| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     |
-| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     |
-| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     |
+| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` | `cnn_inference_improved` | `cnn_full_improved` |
+| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: | :----------------------: | :----------------------: |
+| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     | 2 ❌                     | 2 ❌ |
+| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     | 7 ❌                     | 7 ❌ |
+| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     | 7 ❌                     | 7 ❌ |
+| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     | 3 ✅                     | 3 ✅ |
+| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     | 7 ❌                     | 7 ❌ |
+| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     | 5 ✅                     | 5 ✅ |
+| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     | 5 ❌                     | 5 ❌ |
+| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     | 7 ✅                     | 7 ✅ |
+| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     | 9 ✅                     | 9 ✅ |
 
 ---
 
@@ -28,8 +28,10 @@ This table ranks the models from best to worst based on their accuracy on the te
 | :--: | :--- | :-----: | :---: | :------: |
 | 1    | `cnn_raw_inference.py` (`CNN_from_raw_image.pth`) | 6       | 9     | **66.7%**  |
 | 1 (Tie)| `inference_custom_mlp_improved.py` (`best_mlp_improved.pth`) | 6 | 9 | **66.7%** |
-| 2    | `cnn_inference.py` (`CNN_digit_full.pth`) | 5       | 9     | **55.6%**  |
-| 3    | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
+| 3    | `cnn_inference.py` (`CNN_digit_full.pth`) | 5       | 9     | **55.6%**  |
+| 4    | `inference_custom_cnn_improved.py` (`best_cnn_improved.pth`) | 4 | 9 | **44.4%** |
+| 4 (Tie)| `cnn_full_improved.pth` | 4 | 9 | **44.4%** |
+| 6    | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
 | 4    | `rf_inference.py` (`rf_model.joblib`) | 3       | 9     | **33.3%**  |
 | 5    | `mlp_raw_inference.py` (`MLP_from_raw_image.pth`) | 2       | 9     | **22.2%**  |
 
@@ -57,4 +59,11 @@ This table ranks the models from best to worst based on their accuracy on the te
 
 ## Conclusion
 
-The **`CNN_from_raw_image.pth` model is the best performing model** on this custom test set, with an accuracy of 66.7%. The results clearly demonstrate the architectural advantage of CNNs for image classification tasks compared to both MLPs and Random Forest classifiers.
+The **`CNN_from_raw_image.pth` model and `best_mlp_improved.pth` are the best performing models** on this custom test set, with an accuracy of 66.7%.
+
+The improved CNN model (`best_cnn_improved.pth` and `cnn_full_improved.pth`) achieved 44.4%, which is surprisingly lower than the baseline CNN (55.6%) on this specific small test set, despite having superior validation accuracy (99%) during training.
+
+**Reason for Regression:**
+1.  **Over-Regularization/Augmentation Mismatch:** The huge gap between Train/Val (99%) and Custom Test (44%) often indicates that the augmentation (rotation/shifting) made the model expect "messy" data, while the custom test set (after 50-value threshold cleaning) was "too clean" or simply different.
+2.  **Architecture:** The original CNN had dense layers (`Linear(64*8*8, 128)`). The improved CNN replaced this with `AdaptiveAvgPool` + `Linear(64, 32)`. While this is theoretically better for preventing overfitting (reducing params), it may have removed the specific "rote memorization" capacity that actually helped classify these specific, clean custom images. The original model could "memorize" the spatial layout of specific digits better.
+3.  **Thresholding:** The cleaning step (setting <50 to 0) might be removing subtle edges that the Global Average Pooling layer requires to differentiate shapes, whereas the Dense layer in the original model could just look at specific pixel coordinates.
