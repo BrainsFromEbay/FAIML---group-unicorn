@@ -5,12 +5,11 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import sys
 
-# CONFIGURATION
 BATCH_SIZE = 64
 NUM_EPOCHS = 15
 LEARNING_RATE = 0.001
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-MODEL_SAVE_PATH = "Mahi/preprocessed/models/mlp_mnist_best.pth"
+MODEL_SAVE_PATH = "Mahi/preprocessed/models/mlp_mnist.pth"
 
 class MNIST_MLP(nn.Module):
     def __init__(self):
@@ -34,12 +33,11 @@ class MNIST_MLP(nn.Module):
 if __name__ == '__main__':
     print(f"Using device: {DEVICE}")
 
-    # Same preprocessing as the successful CNN
     transform = transforms.Compose([
         transforms.Resize((28, 28)),
         transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1)),
         transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,)) # [-1, 1]
+        transforms.Normalize((0.5,), (0.5,))
     ])
 
     print("Loading MNIST Dataset...")
@@ -74,7 +72,6 @@ if __name__ == '__main__':
             optimizer.step()
             running_loss += loss.item()
             
-        # Validation
         model.eval()
         correct = 0
         total = 0

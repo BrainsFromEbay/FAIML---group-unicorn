@@ -40,7 +40,7 @@ transform = transforms.Compose([
 ])
 
 # 3. Load the trained model
-model_path = 'Mahi/raw_image/CNN_from_raw_image.pth'
+model_path = 'Mahi/preprocessed/models/CNN_raw.pth'
 model = SimpleCNN(num_classes=10).to(DEVICE)
 model.load_state_dict(torch.load(model_path, map_location=DEVICE))
 model.eval()

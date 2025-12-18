@@ -1,64 +1,47 @@
 # Model Performance Comparison Report
 
-This report summarizes the performance of five different machine learning models on a custom test set of 9 digit images. All models were tested using inference scripts located in the `Mahi/preprocessed/inference/` directory.
+This report summarizes the performance of the active models in `Mahi/preprocessed/inference/`.
+All models were re-evaluated on the `custom_test` dataset (10 images).
 
 ## Prediction Matrix
 
-The following table shows the predictions of each model for every image in the `custom_test` folder. A checkmark (✅) indicates a correct prediction, while a cross (❌) indicates an incorrect one.
+| Image | Exp | CNN Raw | CNN Pickle | CNN MNIST | MLP Pickle | MLP MNIST | RF Pickle | RF MNIST |
+| :---: | :-: | :-----: | :--------: | :-------: | :--------: | :-------: | :-------: | :------: |
+| 0.png |  0  |  8 ❌   |    8 ❌    |   8 ❌    |    8 ❌    |   8 ❌    |   1 ❌    |   2 ❌   |
+| 1.png |  1  |  1 ✅   |    1 ✅    |   1 ✅    |    1 ✅    |   1 ✅    |   2 ❌    |   1 ✅   |
+| 2.png |  2  |  2 ✅   |    7 ❌    |   2 ✅    |    2 ✅    |   2 ✅    |   2 ✅    |   2 ✅   |
+| 3.png |  3  |  3 ✅   |    3 ✅    |   3 ✅    |    9 ❌    |   3 ✅    |   7 ❌    |   1 ❌   |
+| 4.png |  4  |  1 ❌   |    7 ❌    |   1 ❌    |    4 ✅    |   1 ❌    |   2 ❌    |   5 ❌   |
+| 5.png |  5  |  5 ✅   |    3 ❌    |   5 ✅    |    5 ✅    |   1 ❌    |   5 ✅    |   5 ✅   |
+| 6.png |  6  |  4 ❌   |    0 ❌    |   8 ❌    |    9 ❌    |   6 ✅    |   1 ❌    |   6 ✅   |
+| 7.png |  7  |  7 ✅   |    7 ✅    |   7 ✅    |    7 ✅    |   7 ✅    |   7 ✅    |   2 ❌   |
+| 8.png |  8  |  8 ✅   |    8 ✅    |   8 ✅    |    8 ✅    |   8 ✅    |   1 ❌    |   2 ❌   |
+| 9.png |  9  |  9 ✅   |    9 ✅    |   9 ✅    |    9 ✅    |   9 ✅    |   1 ❌    |   8 ❌   |
 
-| Image | Expected | `mlp_inference` | `mlp_raw_inference` | `rf_inference` | `cnn_inference` | `cnn_raw_inference` | `mlp_inference_improved` | `cnn_inference_improved` | `cnn_full_improved` | `cnn_refined_inference` | `cnn_final_mnist` | `mlp_mnist` | `rf_mnist` |
-| :---- | :------: | :-------------: | :-----------------: | :------------: | :-------------: | :-----------------: | :----------------------: | :----------------------: | :----------------------: | :--------------------------: | :-------------------: | :---------: | :--------: |
-| 0.png | 0        | 1 ❌            | 1 ❌                | 1 ❌           | 8 ❌            | 8 ❌                | 8 ❌                     | 2 ❌                     | 2 ❌ | 8 ❌ | 8 ❌ | 8 ❌ | 2 ❌ |
-| 1.png | 1        | 1 ✅            | 1 ✅                | 2 ❌           | 1 ✅            | 1 ✅                | 1 ✅                     | 7 ❌                     | 7 ❌ | 4 ❌ | 1 ✅ | 1 ✅ | 1 ✅ |
-| 2.png | 2        | 2 ✅            | 3 ❌                | 2 ✅           | 2 ✅            | 2 ✅                | 2 ✅                     | 7 ❌                     | 7 ❌ | 2 ✅ | 2 ✅ | 2 ✅ | 2 ✅ |
-| 3.png | 3        | 1 ❌            | 1 ❌                | 7 ❌           | 3 ✅            | 3 ✅                | 9 ❌                     | 3 ✅                     | 3 ✅ | 3 ✅ | 3 ✅ | 3 ✅ | 1 ❌ |
-| 4.png | 4        | 8 ❌            | 3 ❌                | 2 ❌           | 7 ❌            | 1 ❌                | 4 ✅                     | 7 ❌                     | 7 ❌ | 7 ❌ | 1 ❌ | 1 ❌ | 5 ❌ |
-| 5.png | 5        | 3 ❌            | 3 ❌                | 5 ✅           | 3 ❌            | 5 ✅                | 5 ✅                     | 5 ✅                     | 5 ✅ | 3 ❌ | 5 ✅ | 5 ✅ | 5 ✅ |
-| 6.png | 6        | 4 ❌            | 9 ❌                | 1 ❌           | 4 ❌            | 4 ❌                | 9 ❌                     | 5 ❌                     | 5 ❌ | 5 ❌ | 8 ❌ | 6 ✅ | 6 ✅ |
-| 7.png | 7        | 7 ✅            | 7 ✅                | 7 ✅           | 7 ✅            | 7 ✅                | 7 ✅                     | 7 ✅                     | 7 ✅ | 7 ✅ | 7 ✅ | 7 ✅ | 2 ❌ |
-| 9.png | 9        | 1 ❌            | 1 ❌                | 1 ❌           | 9 ✅            | 9 ✅                | 9 ✅                     | 9 ✅                     | 9 ✅ | 9 ✅ | 9 ✅ | 9 ✅ | 8 ❌ |
-
----
+> **Note**: `CNN Raw` corresponds to `cnn_raw_inference.py`, `CNN MNIST` to `cnn_mnist_inference.py`, etc.
 
 ## Accuracy Scoreboard
 
-This table ranks the models from best to worst based on their accuracy on the test set.
-
-| Rank | Script / Model | Correct | Total | Accuracy |
+| Rank | Model Script | Correct | Total | Accuracy |
 | :--: | :--- | :-----: | :---: | :------: |
-|| 1    | `cnn_mnist.pth` (Friend's Model) | 8 | 9 | **88.9%** |
-| 2    | `mlp_mnist_best.pth` (MLP on MNIST) | 8 | 10 | **80.0%** |
-| 3    | `cnn_final_mnist.pth` (My Re-trained Code) | 7 | 10 | **70.0%** |
-| 4    | `cnn_raw_inference.py` (`CNN_from_raw_image.pth`) | 6       | 9     | **66.7%**  |
-| 4 (Tie)| `inference_custom_mlp_improved.py` (`best_mlp_improved.pth`) | 6 | 9 | **66.7%** |
-| 6    | `cnn_inference.py` (`CNN_digit_full.pth`) | 5       | 9     | **55.6%**  |
-| 7    | `inference_custom_cnn_improved.py` (`best_cnn_improved.pth`) | 4 | 9 | **44.4%** |
-| 7 (Tie)| `cnn_full_improved.pth` | 4 | 9 | **44.4%** |
-| 7 (Tie)| `inference_cnn_refined.py` (`best_cnn_refined.pth`) | 4 | 9 | **44.4%** |
-| 10   | `rf_mnist.joblib` (RF on MNIST) | 4 | 10 | **40.0%** |
-| 11   | `mlp_inference.py` (`best_mlp_model.pth`) | 3       | 9     | **33.3%**  |
-| 11 (Tie)| `rf_inference.py` (`rf_model.joblib`) | 3       | 9     | **33.3%**  |
-| 13   | `mlp_raw_inference.py` (`MLP_from_raw_image.pth`) | 2       | 9     | **22.2%**  |
-
----
+| 1 (Tie) | `cnn_raw_inference.py` | 7 | 10 | **70.0%** |
+| 1 (Tie) | `cnn_mnist_inference.py` | 7 | 10 | **70.0%** |
+| 1 (Tie) | `mlp_mnist_inference.py` | 7 | 10 | **70.0%** |
+| 1 (Tie) | `mlp_pickle_inference.py` | 7 | 10 | **70.0%** |
+| 5 | `cnn_pickle_inference.py` | 5 | 10 | **50.0%** |
+| 6 | `rf_mnist_inference.py` | 4 | 10 | **40.0%** |
+| 7 | `rf_inference.py` | 3 | 10 | **30.0%** |
 
 ## Analysis
 
-### Key Observations:
-1.  **MNIST Data is Superior (for NNs):** The CNN and MLP models trained on MNIST (`cnn_mnist.pth`, `mlp_mnist_best.pth`, `cnn_final_mnist.pth`) consistently outperformed all models trained on the user's custom dataset. The Friend's model reached **88.9%**, and the MLP on MNIST reached **80.0%**.
-
-2.  **RF Struggles:** The Random Forest trained on MNIST (`rf_mnist.joblib`) achieved only **40.0%**, significantly worse than the NNs on the same data. This confirms that for raw pixel domains with noise/style variations (like handwriting), Neural Networks (especially CNNs/MLPs) are structurally superior to Decision Trees.
-
-3.  **MLP on MNIST > CNN on Custom Data:** The simple MLP trained on MNIST (80%) outperformed even the best CNN trained on custom data (66.7%). This proves: **Data Quality > Model Architecture**.
-
-### Image-Specific Observations:
-*   **Easy Images:** `1, 2, 5, 6` were correctly identified by RF.
-*   **Hard Images:** `3, 7, 9` were missed by RF but caught by most NNs. This suggests RF overfits to specific pixel patterns and fails when the digit shifts or tilts slightly.
+1.  **Neural Networks > Random Forest**: The neural networks (CNNs and MLPs) consistently outperformed Random Forests (30-40%). This confirms that for image data, especially with domain shifts (custom handwriting), deep learning approaches are far more robust.
+2.  **Consistency**: Four different NN models achieved **70% accuracy**. This suggests a "ceiling" at 70% for these standard architectures on this specific test set without more advanced techniques or more targeted data.
+    - They mostly fail on the same difficult digits: **0** (looks like 8), **4** (confusing stroke), and sometimes **6**.
+3.  **Surprise Performer**: `MLP Pickle` was the **only model to correctly classify the digit 4**. This is notable because even the MNIST models failed on it.
+4.  **MNIST Benefit**: While `RF` improved on MNIST (30% -> 40%) and `MLP` maintained high performance (70%), the `CNN` didn't dramatically outperform `CNN Raw` in this specific run. However, historically ( फ्रेंड's model), MNIST has shown potential for higher accuracy (89%).
 
 ## Conclusion
 
-The **Friend's `cnn_mnist.pth` (88.9%)** and our **`mlp_mnist_best.pth` (80.0%)** are the best performing models.
-
-**Final Takeaway:**
-1.  **Use MNIST**: Training on the large, diverse MNIST dataset is far better than using the small generated pickle file.
-2.  **Use Neural Networks**: CNNs or MLPs generalize much better than Random Forests for this image recognition task.
+The project has consolidated around 70% accuracy for Neural Networks. To break this ceiling, one would likely need to:
+1.  Augment the training data with samples that specifically resemble the fail cases (0s that look like 8s, 4s with this specific stroke style).
+2.  Use a more complex architecture or ensemble methods.

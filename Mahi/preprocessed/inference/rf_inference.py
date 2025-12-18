@@ -4,7 +4,7 @@ import cv2
 import os
 
 # 1. Load the trained Random Forest model
-model_path = 'Mahi/preprocessed/models/rf_model.joblib'
+model_path = 'Mahi/preprocessed/models/rf.joblib'
 model = joblib.load(model_path)
 
 # 2. Preprocessing and Prediction Loop
