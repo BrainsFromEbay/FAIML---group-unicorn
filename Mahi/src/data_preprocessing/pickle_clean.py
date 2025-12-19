@@ -2,8 +2,8 @@ import pickle
 import numpy as np
 import os
 
-original_pickle_path = "Mahi/preprocessed/digits_data.pickle"
-cleaned_pickle_path = "Mahi/preprocessed/digits_data_cleaned.pickle"
+original_pickle_path = "Mahi/src/data_preprocessing/digits_data.pickle"
+cleaned_pickle_path = "Mahi/src/data_preprocessing/digits_data_cleaned.pickle"
 
 with open(original_pickle_path, 'rb') as f:
     data = pickle.load(f)

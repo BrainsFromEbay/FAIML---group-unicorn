@@ -3,7 +3,7 @@ import os
 import cv2
 import pickle
 
-BASE_DIR = "."
+BASE_DIR = "../"
 IMG_SIZE = 32
 
 CATEGORIES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -59,6 +59,6 @@ data_package = {
     "categories": CATEGORIES
 }
 
-output_filename = "digits_data.pickle"
+output_filename = "Mahi/src/data_preprocessing/digits_data.pickle"
 with open(output_filename, "wb") as f:
     pickle.dump(data_package, f)
