@@ -1,5 +1,5 @@
-Mahi/preprocessed/digits_data.pickle
-Mahi/preprocessed/digits_data_cleaned.pickle
-Mahi/preprocessed/models/rf.joblib
-Mahi/preprocessed/models/rf_mnist.joblib
+Mahi/src/digits_data.pickle
+Mahi/src/digits_data_cleaned.pickle
+Mahi/src/models/rf.joblib
+Mahi/src/models/rf_mnist.joblib
 data/
