@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image, ImageOps
 from skimage.feature import hog
 
-data = np.load("hog_logistic_mnist.npz")
+data = np.load("Oyshe/hog_logistic_mnist.npz")
 weights = data["weights"]
 bias = data["bias"]
 
@@ -40,7 +40,7 @@ def predict_digit(image_path):
 
     return digit, confidence
 
-folder = "Hand written number"
+folder = "custom_test"
 
 print("Predicting hand-written digits:\n")
 
