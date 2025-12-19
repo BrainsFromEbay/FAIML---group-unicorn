@@ -42,22 +42,20 @@ model.eval()
 folder = 'custom_test'
 files = [f for f in os.listdir(folder) if f.lower().endswith('.png')]
 
-print(f"Found {len(files)} images in '{folder}'.\n")
-print(f"Using model: {model_path}")
-print("-" * 40)
+print(f"Model loaded on {DEVICE}")
+print("-" * 55)
+print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
+print("-" * 55)
 
 for f in sorted(files):
     name = f.split('.')[0].strip()
-    try:
-        expected = int(name)
-    except ValueError:
-        expected = "Unknown"
 
     img_path = os.path.join(folder, f)
     
     img_np = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    if img_np is None:
+        continue
     
-    img_np = 255 - img_np
     img_np = 255 - img_np
 
     img_np[img_np < 50] = 0
@@ -70,12 +68,11 @@ for f in sorted(files):
 
     with torch.no_grad():
         output = model(input_tensor)
-        pred = output.argmax(dim=1).item()
+        probs = torch.nn.functional.softmax(output, dim=1)
+        confidence, predicted = torch.max(probs, 1)
 
-    print(f"File: {f}")
-    print(f"Expected digit (from filename): {expected}")
-    print(f"Predicted digit: {pred}")
-    print(f"Match: {'Yes' if expected == pred else 'No'}")
-    print("-" * 40)
+    pred = predicted.item()
+    conf_score = confidence.item() * 100
 
-print("\nInference complete.")
+    print(f"{f:<20} | {pred:<10} | {conf_score:.1f}%")
+

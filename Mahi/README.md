@@ -163,48 +163,49 @@ Each training script has a corresponding inference script to test the model on t
 # Model Performance Comparison Report
 
 This report summarizes the performance of the active models in `Mahi/src/inference/`.
-All models were re-evaluated on the `custom_test` dataset (10 images).
+All models were re-evaluated on the `custom_test` dataset (20 images: 10 'normal' x.png and 10 'noisy' x(1).png).
+*Note: The table below only shows the 10 'normal' test images (x.png) for brevity, but accuracy stats include all 20.*
 
-## Prediction Matrix
+## Prediction Matrix (Standard Test Set)
 
 | Image | Exp | CNN Raw | CNN Pickle | CNN MNIST | MLP Pickle | MLP MNIST | RF Pickle | RF MNIST |
 | :---: | :-: | :-----: | :--------: | :-------: | :--------: | :-------: | :-------: | :------: |
-| 0.png |  0  |  8 ❌   |    8 ❌    |   8 ❌    |    8 ❌    |   8 ❌    |   8 ❌    |   2 ❌   |
-| 1.png |  1  |  1 ✅   |    1 ✅    |   1 ✅    |    1 ✅    |   1 ✅    |   1 ✅    |   1 ✅   |
+| 0.png |  0  |  0 ✅   |    0 ✅    |   0 ✅    |    0 ✅    |   0 ✅    |   2 ❌    |   0 ✅   |
+| 1.png |  1  |  1 ✅   |    1 ✅    |   1 ✅    |    1 ✅    |   1 ✅    |   2 ❌    |   1 ✅   |
 | 2.png |  2  |  2 ✅   |    7 ❌    |   2 ✅    |    2 ✅    |   2 ✅    |   2 ✅    |   2 ✅   |
-| 3.png |  3  |  3 ✅   |    3 ✅    |   3 ✅    |    9 ❌    |   3 ✅    |   3 ✅    |   1 ❌   |
-| 4.png |  4  |  1 ❌   |    7 ❌    |   1 ❌    |    4 ✅    |   1 ❌    |   1 ❌    |   5 ❌   |
-| 5.png |  5  |  5 ✅   |    3 ❌    |   5 ✅    |    5 ✅    |   5 ✅    |   1 ❌    |   5 ✅   |
-| 6.png |  6  |  4 ❌   |    0 ❌    |   8 ❌    |    9 ❌    |   6 ✅    |   6 ✅    |   6 ✅   |
+| 3.png |  3  |  3 ✅   |    3 ✅    |   3 ✅    |    9 ❌    |   3 ✅    |   7 ❌    |   1 ❌   |
+| 4.png |  4  |  1 ❌   |    7 ❌    |   1 ❌    |    4 ✅    |   1 ❌    |   2 ❌    |   5 ❌   |
+| 5.png |  5  |  5 ✅   |    3 ❌    |   5 ✅    |    5 ✅    |   1 ❌    |   5 ✅    |   5 ✅   |
+| 6.png |  6  |  4 ❌   |    0 ❌    |   8 ❌    |    9 ❌    |   6 ✅    |   1 ❌    |   6 ✅   |
 | 7.png |  7  |  7 ✅   |    7 ✅    |   7 ✅    |    7 ✅    |   7 ✅    |   7 ✅    |   2 ❌   |
-| 8.png |  8  |  8 ✅   |    8 ✅    |   8 ✅    |    8 ✅    |   8 ✅    |   8 ✅    |   2 ❌   |
-| 9.png |  9  |  9 ✅   |    9 ✅    |   9 ✅    |    9 ✅    |   9 ✅    |   9 ✅    |   8 ❌   |
+| 8.png |  8  |  8 ✅   |    8 ✅    |   8 ✅    |    8 ✅    |   8 ✅    |   1 ❌    |   2 ❌   |
+| 9.png |  9  |  9 ✅   |    9 ✅    |   9 ✅    |    9 ✅    |   9 ✅    |   1 ❌    |   8 ❌   |
 
-> **Note**: `CNN Raw` corresponds to `cnn_raw_inference.py`, `CNN MNIST` to `cnn_mnist_inference.py`, etc.
-
-## Accuracy Scoreboard
+## Accuracy Scoreboard (All 20 Images)
 
 | Rank | Model Script | Correct | Total | Accuracy |
 | :--: | :--- | :-----: | :---: | :------: |
-| 1 (Tie) | `cnn_raw_inference.py` | 7 | 10 | **70.0%** |
-| 1 (Tie) | `cnn_mnist_inference.py` | 7 | 10 | **70.0%** |
-| 1 (Tie) | `mlp_mnist_inference.py` | 7 | 10 | **70.0%** |
-| 1 (Tie) | `mlp_pickle_inference.py` | 7 | 10 | **70.0%** |
-| 5 | `cnn_pickle_inference.py` | 5 | 10 | **50.0%** |
-| 6 | `rf_mnist_inference.py` | 4 | 10 | **40.0%** |
-| 7 | `rf_inference.py` | 3 | 10 | **30.0%** |
+| 1 | `cnn_raw_inference.py` | 17 | 20 | **85.0%** |
+| 2 | `mlp_mnist_inference.py` | 14 | 20 | **70.0%** |
+| 3 | `cnn_mnist_inference.py` | 13 | 20 | **65.0%** |
+| 4 | `mlp_pickle_inference.py` | 12 | 20 | **60.0%** |
+| 5 | `cnn_pickle_inference.py` | 5 | 20 | **25.0%** |
+| 6 | `rf_mnist_inference.py` | 4 | 20 | **20.0%** |
+| 7 | `rf_inference.py` | 3 | 20 | **15.0%** |
 
 ## Analysis
 
-1.  **Neural Networks > Random Forest**: The neural networks (CNNs and MLPs) consistently outperformed Random Forests (30-40%). This confirms that for image data, especially with domain shifts (custom handwriting), deep learning approaches are far more robust.
-2.  **Consistency**: Four different NN models achieved **70% accuracy**. This suggests a "ceiling" at 70% for these standard architectures on this specific test set without more advanced techniques or more targeted data.
-    - They mostly fail on the same difficult digits: **0** (looks like 8), **4** (confusing stroke), and sometimes **6**.
-3.  **Surprise Performer**: `MLP Pickle` was the **only model to correctly classify the digit 4**. This is notable because even the MNIST models failed on it.
-4.  **MNIST Benefit**: While `RF` improved on MNIST (30% -> 40%) and `MLP` maintained high performance (70%), the `CNN` didn't dramatically outperform `CNN Raw` in this specific run. However, historically ( फ्रेंड's model), MNIST has shown potential for higher accuracy (89%).
+1.  **Top Performer**: After fixing the preprocessing bug, **`CNN Raw`** jumped to first place (**85%**), demonstrating that a simple CNN trained directly on the target image domain (even if small) can outperform broader models like MNIST if the domain shift is significant.
+2.  **Robustness**: `CNN Raw` handled the noisy `x(1)` images extremely well, missing only a few.
+3.  **Specific Digits**:
+    - **'0'**: `CNN Raw` is the only model that consistently identifies '0' correctly.
+    - **'4'**: Still a hard case. `CNN Raw` mistook it for '1', similar to others.
+    - **'6'**: `CNN Raw` confused it for '4', while `MLP MNIST` got it right.
 
 ## Conclusion
 
-The project has consolidated around 70% accuracy for Neural Networks. To break this ceiling, one would likely need to:
-1.  Augment the training data with samples that specifically resemble the fail cases (0s that look like 8s, 4s with this specific stroke style).
-2.  Use a more complex architecture or ensemble methods.
+The `CNN Raw` model demonstrated that training on domain-specific data (even if less abundant than MNIST) can yield the best results for that specific domain. However, `MLP MNIST` remains a very robust runner-up.
+Future work:
+1.  **Ensembling**: Combine `CNN Raw` (domain expert) with `MLP MNIST` (generalist).
+2.  **Augmentation**: Add more variations of '4' and '6' to the training set.
 

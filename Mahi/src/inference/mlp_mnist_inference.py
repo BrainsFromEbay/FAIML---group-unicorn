@@ -67,33 +67,24 @@ def main():
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     
-    results_path = "Mahi/src/inference/mlp_mnist_results.md"
-    with open(results_path, "w") as f:
-        f.write("# MLP (MNIST) Results\n")
-        f.write("| Filename | Prediction | Confidence |\n")
-        f.write("| :--- | :--- | :--- |\n")
+    for filename in files:
+        filepath = os.path.join(TEST_DIR, filename)
+        input_tensor = preprocess_image(filepath)
         
-        for filename in files:
-            filepath = os.path.join(TEST_DIR, filename)
-            input_tensor = preprocess_image(filepath)
+        if input_tensor is None:
+            continue
             
-            if input_tensor is None:
-                continue
-                
-            input_tensor = input_tensor.to(DEVICE)
+        input_tensor = input_tensor.to(DEVICE)
+        
+        with torch.no_grad():
+            outputs = model(input_tensor)
+            probs = torch.nn.functional.softmax(outputs, dim=1)
+            confidence, predicted = torch.max(probs, 1)
             
-            with torch.no_grad():
-                outputs = model(input_tensor)
-                probs = torch.nn.functional.softmax(outputs, dim=1)
-                confidence, predicted = torch.max(probs, 1)
-                
-            pred_label = predicted.item()
-            conf_score = confidence.item() * 100
-            
-            print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
-            f.write(f"| {filename} | {pred_label} | {conf_score:.1f}% |\n")
-            
-    print(f"Results saved to {results_path}")
+        pred_label = predicted.item()
+        conf_score = confidence.item() * 100
+        
+        print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
 
 if __name__ == "__main__":
     main()

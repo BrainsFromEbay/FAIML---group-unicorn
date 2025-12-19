@@ -60,28 +60,19 @@ def main():
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     
-    results_path = "Mahi/src/inference/rf_mnist_results.md"
-    with open(results_path, "w") as f:
-        f.write("# Random Forest (MNIST) Results\n")
-        f.write("| Filename | Prediction | Confidence |\n")
-        f.write("| :--- | :--- | :--- |\n")
+    for filename in files:
+        filepath = os.path.join(TEST_DIR, filename)
+        input_flat = preprocess_image(filepath)
         
-        for filename in files:
-            filepath = os.path.join(TEST_DIR, filename)
-            input_flat = preprocess_image(filepath)
-            
-            if input_flat is None:
-                continue
-            
-            pred = model.predict(input_flat)[0]
-            
-            probs = model.predict_proba(input_flat)[0]
-            confidence = probs[pred] * 100
-            
-            print(f"{filename:<20} | {pred:<10} | {confidence:.1f}%")
-            f.write(f"| {filename} | {pred} | {confidence:.1f}% |\n")
-            
-    print(f"Results saved to {results_path}")
+        if input_flat is None:
+            continue
+        
+        pred = model.predict(input_flat)[0]
+        
+        probs = model.predict_proba(input_flat)[0]
+        confidence = probs[pred] * 100
+        
+        print(f"{filename:<20} | {pred:<10} | {confidence:.1f}%")
 
 if __name__ == "__main__":
     main()

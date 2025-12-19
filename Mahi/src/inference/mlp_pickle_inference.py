@@ -69,9 +69,9 @@ def main():
 
     model = load_model()
     print(f"Model loaded on {DEVICE}")
-    print("-" * 40)
+    print("-" * 55)
     print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
-    print("-" * 40)
+    print("-" * 55)
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     

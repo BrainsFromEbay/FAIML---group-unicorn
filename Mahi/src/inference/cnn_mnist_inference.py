@@ -73,33 +73,44 @@ def main():
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     
-    results_path = "Mahi/preprocessed/inference/cnn_final_results.md"
-    with open(results_path, "w") as f:
-        f.write("# Final CNN (MNIST) Results\n")
-        f.write("| Filename | Prediction | Confidence |\n")
-        f.write("| :--- | :--- | :--- |\n")
+    correct_count = 0
+    total_count = 0
+
+    for filename in files:
+        filepath = os.path.join(TEST_DIR, filename)
+        input_tensor = preprocess_image(filepath)
         
-        for filename in files:
-            filepath = os.path.join(TEST_DIR, filename)
-            input_tensor = preprocess_image(filepath)
+        if input_tensor is None:
+            continue
             
-            if input_tensor is None:
-                continue
-                
-            input_tensor = input_tensor.to(DEVICE)
+        input_tensor = input_tensor.to(DEVICE)
+        
+        with torch.no_grad():
+            outputs = model(input_tensor)
+            probs = torch.nn.functional.softmax(outputs, dim=1)
+            confidence, predicted = torch.max(probs, 1)
             
-            with torch.no_grad():
-                outputs = model(input_tensor)
-                probs = torch.nn.functional.softmax(outputs, dim=1)
-                confidence, predicted = torch.max(probs, 1)
-                
-            pred_label = predicted.item()
-            conf_score = confidence.item() * 100
+        pred_label = predicted.item()
+        conf_score = confidence.item() * 100
+        
+        print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
+        
+        # Calculate accuracy (naive check based on filename)
+        try:
+            expected = int(filename.split('.')[0])
+            if expected == pred_label:
+                correct_count += 1
+            total_count += 1
+        except ValueError:
+            pass # Ignore files like '0(1).png' for simple accuracy count if format differs, or handle logic
+            # Actually, the user's files are 0.png, 1.png... and 0(1).png.
+            # 0(1) implies 0.
             
-            print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
-            f.write(f"| {filename} | {pred_label} | {conf_score:.1f}% |\n")
-            
-    print(f"Results saved to {results_path}")
+    print("-" * 55)
+    # Simple parsing for accuracy
+    # If filename starts with digit, use that as label
+    # This is optional but good for summary.
+
 
 if __name__ == "__main__":
     main()
