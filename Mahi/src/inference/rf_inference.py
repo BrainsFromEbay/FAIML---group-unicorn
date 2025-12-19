@@ -13,6 +13,9 @@ print("-" * 55)
 print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
 print("-" * 55)
 
+correct_count = 0
+total_count = 0
+
 for f in sorted(files):
     name = f.split('.')[0].strip()
 
@@ -37,4 +40,21 @@ for f in sorted(files):
     confidence = probs[prediction] * 100
 
     print(f"{f:<20} | {prediction:<10} | {confidence:.1f}%")
+
+    # Calculate accuracy
+    try:
+        base_name = f.split('(')[0]
+        expected = int(base_name.split('.')[0])
+        
+        if expected == prediction:
+            correct_count += 1
+        total_count += 1
+    except ValueError:
+        pass
+
+if total_count > 0:
+    accuracy = (correct_count / total_count) * 100
+    print("-" * 55)
+    print(f"Accuracy: {correct_count}/{total_count} ({accuracy:.1f}%)")
+    print("-" * 55)
 

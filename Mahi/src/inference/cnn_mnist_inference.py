@@ -94,22 +94,24 @@ def main():
         conf_score = confidence.item() * 100
         
         print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
-        
-        # Calculate accuracy (naive check based on filename)
+        # Calculate accuracy
         try:
-            expected = int(filename.split('.')[0])
+            # Handle standard "0.png" and noisy "0(1).png"
+            # Split by '(' first to ignore noise suffix, then split by '.'
+            base_name = filename.split('(')[0]
+            expected = int(base_name.split('.')[0])
+            
             if expected == pred_label:
                 correct_count += 1
             total_count += 1
         except ValueError:
-            pass # Ignore files like '0(1).png' for simple accuracy count if format differs, or handle logic
-            # Actually, the user's files are 0.png, 1.png... and 0(1).png.
-            # 0(1) implies 0.
-            
-    print("-" * 55)
-    # Simple parsing for accuracy
-    # If filename starts with digit, use that as label
-    # This is optional but good for summary.
+            pass
+
+    if total_count > 0:
+        accuracy = (correct_count / total_count) * 100
+        print("-" * 55)
+        print(f"Accuracy: {correct_count}/{total_count} ({accuracy:.1f}%)")
+        print("-" * 55)
 
 
 if __name__ == "__main__":

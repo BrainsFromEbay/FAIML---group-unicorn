@@ -75,6 +75,9 @@ def main():
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     
+    correct_count = 0
+    total_count = 0
+
     for filename in files:
         filepath = os.path.join(TEST_DIR, filename)
         input_tensor = preprocess_image(filepath)
@@ -94,6 +97,23 @@ def main():
         conf_score = confidence.item() * 100
         
         print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
+
+        # Calculate accuracy
+        try:
+            base_name = filename.split('(')[0]
+            expected = int(base_name.split('.')[0])
+            
+            if expected == pred_label:
+                correct_count += 1
+            total_count += 1
+        except ValueError:
+            pass
+
+    if total_count > 0:
+        accuracy = (correct_count / total_count) * 100
+        print("-" * 55)
+        print(f"Accuracy: {correct_count}/{total_count} ({accuracy:.1f}%)")
+        print("-" * 55)
 
 if __name__ == "__main__":
     main()
