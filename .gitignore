@@ -3,3 +3,5 @@ Mahi/src/digits_data_cleaned.pickle
 Mahi/src/models/rf.joblib
 Mahi/src/models/rf_mnist.joblib
 data/
+Mahi/src/data_preprocessing/digits_data.pickle
+Mahi/src/data_preprocessing/digits_data_cleaned.pickle
