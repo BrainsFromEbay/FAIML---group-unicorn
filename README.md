@@ -12,7 +12,39 @@ The project is organized by team member:
 - **[Jere](Jere/README.md)**: Implemented a SimpleCNN trained on the official MNIST dataset, bypassing download restrictions by using local data.
 - **[Oyshe](Oyshe/README.md)**: Implemented a classic Computer Vision approach using HOG (Histogram of Oriented Gradients) feature extraction coupled with Logistic Regression.
 
+
 ---
+
+## 🚀 Quick Start (GUI)
+
+We have built a **Streamlit GUI** (`gui.py`) that unifies all the models into a single interface. You can upload an image or select a folder to test predictions in real-time.
+
+1.  **Run the App**:
+    ```bash
+    streamlit run gui.py
+    ```
+2.  **Features**:
+    *   **Model Selection**: Choose between Mahi (CNN/MLP/RF), Oyshe (HOG+LR), and Jere (CNN).
+    *   **Input**: Upload an image or point to a local folder (e.g., `custom_test`).
+    *   **Metrics**: View real-time predictions and pre-calculated confusion matrices.
+
+## 📦 Installation
+
+To replicate the environment, you can install the dependencies using `pip` or `conda`.
+
+### Using pip
+```bash
+pip install -r requirements.txt
+```
+
+### Using Conda
+```bash
+conda env create -f environment.yml
+conda activate thesis
+```
+
+---
+
 
 # Unified Model Performance Leaderboard
 
