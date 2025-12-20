@@ -52,18 +52,51 @@ def main():
         print(f"Test directory not found: {TEST_DIR}")
         return
         
-    if not os.path.exists(MODEL_PATH):
-        print(f"Model file not found (yet): {MODEL_PATH}")
-        return
+
+def load_model(model_path=MODEL_PATH):
+    if not os.path.exists(model_path):
+        # Fallback for relative path from root
+        alternative = os.path.join("Mahi", "src", "models", "MLP_mnist.pth")
+        if os.path.exists(alternative):
+            model_path = alternative
+            
+    if not os.path.exists(model_path):
+        print(f"Model file not found: {model_path}")
+        return None
 
     model = MNIST_MLP().to(DEVICE)
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+    model.load_state_dict(torch.load(model_path, map_location=DEVICE))
     model.eval()
+    return model
+
+def predict_single(model, image_path):
+    input_tensor = preprocess_image(image_path)
+    if input_tensor is None:
+        return None, None
+        
+    input_tensor = input_tensor.to(DEVICE)
+    
+    with torch.no_grad():
+        outputs = model(input_tensor)
+        probs = torch.nn.functional.softmax(outputs, dim=1)
+        confidence, predicted = torch.max(probs, 1)
+        
+    return predicted.item(), confidence.item() * 100
+
+def main():
+    if not os.path.exists(TEST_DIR):
+        print(f"Test directory not found: {TEST_DIR}")
+        return
+        
+    model = load_model()
+    if model is None:
+        return
 
     print(f"MLP Model loaded on {DEVICE}")
     print("-" * 55)
     print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
     print("-" * 55)
+
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     

@@ -47,16 +47,56 @@ def main():
         print(f"Test directory not found: {TEST_DIR}")
         return
         
-    if not os.path.exists(MODEL_PATH):
-        print(f"Model file not found: {MODEL_PATH}")
-        return
 
-    print(f"Loading RF Model from {MODEL_PATH}...")
-    model = joblib.load(MODEL_PATH)
+
+def load_model(model_path=MODEL_PATH):
+    # Try finding the file in several locations
+    possible_paths = [
+        model_path,
+        os.path.join("Mahi", "src", "models", "rf_mnist.joblib"),
+        os.path.join("..", "models", "rf_mnist.joblib"), # If run from inference folder
+        "rf_mnist.joblib"
+    ]
+    
+    final_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            final_path = path
+            break
+            
+    if final_path is None:
+        print(f"Model file not found. Tried: {possible_paths}")
+        return None
+        
+    print(f"Loading RF Model from {final_path}...")
+    model = joblib.load(final_path)
+    return model
+
+
+def predict_single(model, image_path):
+    input_flat = preprocess_image(image_path)
+    if input_flat is None:
+        return None, None
+    
+    pred = model.predict(input_flat)[0]
+    probs = model.predict_proba(input_flat)[0]
+    confidence = probs[pred] * 100
+    
+    return pred, confidence
+
+def main():
+    if not os.path.exists(TEST_DIR):
+        print(f"Test directory not found: {TEST_DIR}")
+        return
+        
+    model = load_model()
+    if model is None:
+        return
     
     print("-" * 55)
     print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
     print("-" * 55)
+
 
     files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
     

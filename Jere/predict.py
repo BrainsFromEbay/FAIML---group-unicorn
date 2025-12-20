@@ -132,7 +132,20 @@ def predict_custom_test(model, device):
     
     return results, accuracy
 
-def load_model(model_path="cnn_mnist.pth"):
+
+def load_model(model_path="cnn_mnist.pth", base_path="Jere"):
+    if not os.path.exists(model_path):
+         # Try with base path
+         alt_path = os.path.join(base_path, "cnn_mnist.pth")
+         if os.path.exists(alt_path):
+             model_path = alt_path
+         else:
+             # Just to be safe, check if we are already in Jere
+             if os.path.exists("cnn_mnist.pth"):
+                 model_path = "cnn_mnist.pth"
+             else:
+                pass # Let it fail if still not found
+    
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file '{model_path}' not found.")
     
@@ -143,13 +156,12 @@ def load_model(model_path="cnn_mnist.pth"):
 
     return model
 
-if __name__ == "__main__":
-    # Check for model in current dir
-    if os.path.exists("cnn_mnist.pth"):
-         model_path = "cnn_mnist.pth"
-    else:
-         print("Model cnn_mnist.pth not found in current directory.")
-         exit(1)
 
-    model = load_model(model_path)
-    predict_custom_test(model, device)
+
+if __name__ == "__main__":
+    try:
+        model = load_model()
+        predict_custom_test(model, device)
+    except FileNotFoundError as e:
+        print(e)
+        exit(1)
