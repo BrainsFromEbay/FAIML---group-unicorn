@@ -1,4 +1,4 @@
-# FAIML Project -- group-unicorn
+# FAIML Project -- Group Unicorn
 
 ## Project Overview
 
@@ -12,7 +12,6 @@ The project is organized by team member:
 - **[Jere](Jere/README.md)**: Implemented a SimpleCNN trained on the official MNIST dataset, bypassing download restrictions by using local data.
 - **[Oyshe](Oyshe/README.md)**: Implemented a classic Computer Vision approach using HOG (Histogram of Oriented Gradients) feature extraction coupled with Logistic Regression.
 
-
 ---
 
 ## 🚀 Quick Start (GUI)
@@ -24,9 +23,14 @@ We have built a **Streamlit GUI** (`gui.py`) that unifies all the models into a 
     streamlit run gui.py
     ```
 2.  **Features**:
-    *   **Model Selection**: Choose between Mahi (CNN/MLP/RF), Oyshe (HOG+LR), and Jere (CNN).
+    *   **Model Selection**: Choose from a wide variety of models:
+        *   **Mahi**: CNN Raw, CNN Pickle, MLP MNIST, MLP Pickle, Random Forest.
+        *   **Oyshe**: HOG + Logistic Regression.
+        *   **Jere**: Simple CNN.
     *   **Input**: Upload an image or point to a local folder (e.g., `custom_test`).
-    *   **Metrics**: View real-time predictions and pre-calculated confusion matrices.
+    *   **Results**: View real-time predictions with confidence scores.
+    *   **Model Description**: See detailed architecture and training info for the selected model.
+    *   **Performance**: View pre-calculated confusion matrices for *every* model.
 
 ## 📦 Installation
 
@@ -50,29 +54,28 @@ conda activate thesis
 
 All models were evaluated on the same `custom_test` dataset (20 images).
 
-| Rank | Team Member | Model Architecture | Training Data | Accuracy |
-| :--: | :---------- | :----------------- | :------------ | :------- |
-| **1** | **Mahi** | **CNN** | **Raw Images** | **85.0%** |
-| **1** | **Jere** | **SimpleCNN** | **MNIST** | **85.0%** |
-| 3 | Mahi | CNN | MNIST | 80.0% |
-| 3 | Mahi | CNN | Pickled Data | 80.0% |
-| 5 | Mahi | MLP | MNIST | 75.0% |
-| 6 | Mahi | MLP | Pickled Data | 70.0% |
-| 7 | Oyshe | HOG + LogReg | MNIST | 60.0% |
-| 8 | Mahi | Random Forest | Pickled Data | 45.0% |
-| 9 | Mahi | Random Forest | MNIST | 40.0% |
+| Rank | Team Member | Model Variant | Architecture | Training Data | Accuracy |
+| :--: | :---------- | :------------ | :----------- | :------------ | :------- |
+| **1** | **Mahi** | **CNN Raw** | **CNN** | **Raw Images** | **85.0%** |
+| **1** | **Jere** | **SimpleCNN** | **CNN** | **MNIST** | **85.0%** |
+| 3 | Mahi | CNN Pickle | CNN | Pickled Data | 80.0% |
+| 4 | Mahi | MLP MNIST | MLP | MNIST | 75.0% |
+| 5 | Mahi | MLP Pickle | MLP | Pickled Data | 70.0% |
+| 6 | Oyshe | HOG + LogReg | LogReg | MNIST | 60.0% |
+| 7 | Mahi | Random Forest | RF | Pickled Data | 45.0% |
+| 8 | Mahi | Random Forest | RF | MNIST | 40.0% |
 
 ## Consolidated Analysis
 
-1.  **CNN Supremacy**: Convolutional Neural Networks (CNNs) consistently outperformed other architectures (MLP, RF, LogReg), occupying the top 4 spots with accuracies between 80-85%.
+1.  **CNN Supremacy**: Convolutional Neural Networks (CNNs) consistently outperformed other architectures (MLP, RF, LogReg), occupying the top spots with accuracies between 80-85%.
 2.  **Data Source Impact**:
     - **Raw Images**: Surprisingly, Mahi's CNN trained on raw images tied for first place (85%), suggesting the raw data distribution closely matches the `custom_test` set.
-    - **MNIST**: Models trained on MNIST (Jere's SimpleCNN, Mahi's CNN MNIST) were very robust (80-85%), proving that standard MNIST is a great proxy for this task.
+    - **MNIST**: Models trained on MNIST (Jere's SimpleCNN) were very robust (85%), proving that standard MNIST is a great proxy for this task.
     - **Feature Engineering**: Oyshe's HOG + Logistic Regression (60%) outperformed Random Forests (40-45%), showing that manual feature extraction can better capture shape properties than raw pixel-based tree methods when deep learning isn't used.
-3.  **The "Digit 4" Problem**: A recurring theme across almost all models (except Mahi's MLP Pickle) was the difficulty in correctly classifying the digit '4', often mistaking it for '1' or '7'.
-4.  **Noise Robustness**: Several models (especially those trained on Pickled data or using HOG) showed surprisingly good performance on "noisy" images (ending in `(1).png`), sometimes even better than on clean images.
+3.  **The "Digit 4" Problem**: A recurring theme across almost all models was the difficulty in correctly classifying the digit '4', often mistaking it for '1' or '7'.
+4.  **Noise Robustness**: Several models showed surprisingly good performance on "noisy" images (ending in `(1).png`), sometimes even better than on clean images.
 
-## detailed Reports
+## Detailed Reports
 
 For detailed per-image prediction matrices, confusion matrices, and code, please refer to the individual directories:
 
