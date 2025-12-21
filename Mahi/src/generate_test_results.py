@@ -1,12 +1,12 @@
-
+import sys
 import os
 import torch
 import torch.nn as nn
 import numpy as np
 import cv2
+import joblib
 from PIL import Image
 from torchvision import transforms
-import joblib
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -289,13 +289,22 @@ def main():
     # 2. CNN Pickle
     try:
         model = SimpleDigitCNN().to(DEVICE)
-        # Load carefuly
         m_path = 'Mahi/src/models/CNN_pickle.pth'
-        loaded = torch.load(m_path, map_location=DEVICE)
+        
+        # Ensure class is available in __main__ if needed
+        if 'SimpleDigitCNN' not in sys.modules['__main__'].__dict__:
+            sys.modules['__main__'].SimpleDigitCNN = SimpleDigitCNN
+            
+        try:
+             loaded = torch.load(m_path, map_location=DEVICE, weights_only=False)
+        except TypeError:
+             loaded = torch.load(m_path, map_location=DEVICE)
+             
         if isinstance(loaded, nn.Module):
             model = loaded
         else:
             model.load_state_dict(loaded)
+        model.to(DEVICE)
         model.eval()
         evaluate_model('cnn_pickle', model, preprocess_pickle_cnn)
     except Exception as e:
@@ -313,12 +322,23 @@ def main():
     # 4. MLP Pickle
     try:
         model = SimpleMLP().to(DEVICE)
-        # Original script had issues loading state_dict, tried full model.
         m_path = 'Mahi/src/models/MLP_pickle.pth'
+        
+        # Ensure class is available in __main__ if needed
+        if 'SimpleMLP' not in sys.modules['__main__'].__dict__:
+            sys.modules['__main__'].SimpleMLP = SimpleMLP
+            
         try:
-            model.load_state_dict(torch.load(m_path, map_location=DEVICE))
-        except:
-             model = torch.load(m_path, map_location=DEVICE)
+            loaded = torch.load(m_path, map_location=DEVICE, weights_only=False)
+        except TypeError:
+            loaded = torch.load(m_path, map_location=DEVICE)
+
+        if isinstance(loaded, nn.Module):
+            model = loaded
+        else:
+            model.load_state_dict(loaded)
+            
+        model.to(DEVICE)
         model.eval()
         evaluate_model('mlp_pickle', model, preprocess_pickle_mlp)
     except Exception as e:

@@ -118,8 +118,16 @@ def predict_custom_test(model, device):
     print(f"**Accuracy: {accuracy*100:.1f}%** ({sum([1 for t,p in zip(true_labels, pred_labels) if t==p])}/{len(true_labels)})")
     
     # Confusion Matrix
-    if not os.path.exists("results"):
-        os.makedirs("results")
+    # Confusion Matrix
+    # Save to specific Jere/results folder if running from root, or local results if running from Jere
+    
+    # Determine output directory
+    if os.path.basename(os.getcwd()) == "Jere":
+        results_dir = "results"
+    else:
+        results_dir = "Jere/results"
+        
+    os.makedirs(results_dir, exist_ok=True)
 
     cm = confusion_matrix(true_labels, pred_labels, labels=list(range(10)))
     plt.figure(figsize=(10,8))
@@ -127,8 +135,10 @@ def predict_custom_test(model, device):
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix')
-    plt.savefig('results/confusion_matrix.png')
+    plt.savefig(os.path.join(results_dir, 'confusion_matrix.png'))
     plt.close()
+    
+    return results, accuracy
     
     return results, accuracy
 

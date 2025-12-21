@@ -5,10 +5,10 @@ import cv2
 import os
 import sys
 
-MODEL_PATH = "Mahi/src/models/MLP_pickle.pth"
-TEST_DIR = "custom_test"
-IMG_SIZE = 32
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+MODEL_PATH_DEFAULT = "Mahi/src/models/MLP_pickle.pth"
+IMG_SIZE = 32
+
 class SimpleMLP(nn.Module):
     def __init__(self, input_size=32*32, num_classes=10):
         super(SimpleMLP, self).__init__()
@@ -49,61 +49,93 @@ def preprocess_image(image_path):
     
     return torch.tensor(img_normalized).unsqueeze(0) 
 
-def load_model():
-    print(f"Loading model from {MODEL_PATH}...")
-    model = SimpleMLP().to(DEVICE)
+def load_model(model_path=MODEL_PATH_DEFAULT):
+    if not os.path.exists(model_path):
+        alternative = os.path.join("Mahi", "src", "models", "MLP_pickle.pth")
+        if os.path.exists(alternative):
+            model_path = alternative
+            
+    if not os.path.exists(model_path):
+        print(f"Model file not found: {model_path}")
+        return None
+
+    print(f"Loading model from {model_path}...")
+    
+    # Hack to allow loading model if it was saved with class in __main__
+    if 'SimpleMLP' not in sys.modules['__main__'].__dict__:
+        sys.modules['__main__'].SimpleMLP = SimpleMLP
+
     try:
-        model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+        # Try loading with weights_only=False (needed for some pickles or older torch versions)
+        # Note: weights_only=False is security risk if untrusted source, but safe here.
+        model_data = torch.load(model_path, map_location=DEVICE, weights_only=False)
+    except TypeError:
+        # Fallback for older torch pointers where weights_only doesn't exist? 
+        # But generally 2.4+ has it default True.
+        model_data = torch.load(model_path, map_location=DEVICE)
     except Exception as e:
-        print(f"Error loading state_dict: {e}")
-        print("Trying to load full model object...")
-        model = torch.load(MODEL_PATH, map_location=DEVICE)
+        print(f"Error calling torch.load: {e}")
+        return None
+
+    if isinstance(model_data, nn.Module):
+        model = model_data
+    elif isinstance(model_data, dict):
+        model = SimpleMLP().to(DEVICE)
+        model.load_state_dict(model_data)
+    else:
+        print("Unknown model format.")
+        return None
     
     model.eval()
     return model
 
+def predict_single(model, image_path):
+    input_tensor = preprocess_image(image_path)
+    if input_tensor is None:
+        return None, 0.0
+        
+    input_tensor = input_tensor.to(DEVICE)
+    
+    with torch.no_grad():
+        outputs = model(input_tensor)
+        probs = torch.nn.functional.softmax(outputs, dim=1)
+        confidence, predicted = torch.max(probs, 1)
+        
+    return predicted.item(), confidence.item() * 100
+
 def main():
-    if not os.path.exists(TEST_DIR):
-        print(f"Test directory not found: {TEST_DIR}")
+    folder = 'custom_test'
+    if not os.path.exists(folder):
+        print(f"Folder {folder} not found")
         return
 
     model = load_model()
+    if model is None:
+        return
+
     print(f"Model loaded on {DEVICE}")
     print("-" * 55)
     print(f"{'Filename':<20} | {'Prediction':<10} | {'Confidence':<10}")
     print("-" * 55)
 
-    files = sorted([f for f in os.listdir(TEST_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-    
+    files = [f for f in os.listdir(folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     correct_count = 0
     total_count = 0
 
-    for filename in files:
-        filepath = os.path.join(TEST_DIR, filename)
-        input_tensor = preprocess_image(filepath)
+    for filename in sorted(files):
+        filepath = os.path.join(folder, filename)
+        pred, conf = predict_single(model, filepath)
         
-        if input_tensor is None:
-            print(f"{filename:<20} | Error reading file")
+        if pred is None:
             continue
             
-        input_tensor = input_tensor.to(DEVICE)
-        
-        with torch.no_grad():
-            outputs = model(input_tensor)
-            probs = torch.nn.functional.softmax(outputs, dim=1)
-            confidence, predicted = torch.max(probs, 1)
-            
-        pred_label = predicted.item()
-        conf_score = confidence.item() * 100
-        
-        print(f"{filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
+        print(f"{filename:<20} | {pred:<10} | {conf:.1f}%")
 
-        # Calculate accuracy
         try:
             base_name = filename.split('(')[0]
             expected = int(base_name.split('.')[0])
             
-            if expected == pred_label:
+            if expected == pred:
                 correct_count += 1
             total_count += 1
         except ValueError:

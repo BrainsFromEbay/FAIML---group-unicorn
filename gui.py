@@ -37,8 +37,23 @@ try:
 except ImportError as e:
     st.error(f"Failed to import Mahi's RF module: {e}")
 
+try:
+    import Mahi.src.inference.cnn_raw_inference as mahi_cnn_raw
+except ImportError as e:
+    st.error(f"Failed to import Mahi's CNN Raw module: {e}")
 
-# Page Config
+try:
+    import Mahi.src.inference.cnn_pickle_inference as mahi_cnn_pickle
+except ImportError as e:
+    st.error(f"Failed to import Mahi's CNN Pickle module: {e}")
+
+try:
+    import Mahi.src.inference.mlp_pickle_inference as mahi_mlp_pickle
+except ImportError as e:
+    st.error(f"Failed to import Mahi's MLP Pickle module: {e}")
+
+
+# PageConfig
 st.set_page_config(
     page_title="FAIML Digit Recognition",
     page_icon="🔢",
@@ -53,7 +68,7 @@ with st.sidebar:
     st.header("Configuration")
     model_choice = st.radio(
         "Select Model",
-        ("Mahi - CNN", "Mahi - MLP", "Mahi - Random Forest", "Oyshe - HOG + Logistic Regression", "Jere - CNN")
+        ("Mahi - CNN Raw", "Mahi - CNN Pickle", "Mahi - MLP MNIST", "Mahi - MLP Pickle", "Mahi - Random Forest", "Oyshe - HOG + Logistic Regression", "Jere - CNN")
     )
     
     st.info(f"You selected: **{model_choice}**")
@@ -82,6 +97,18 @@ def load_mahi_mlp_model():
 @st.cache_resource
 def load_mahi_rf_model():
     return mahi_rf.load_model()
+
+@st.cache_resource
+def load_mahi_cnn_raw_model():
+    return mahi_cnn_raw.load_model()
+
+@st.cache_resource
+def load_mahi_cnn_pickle_model():
+    return mahi_cnn_pickle.load_model()
+
+@st.cache_resource
+def load_mahi_mlp_pickle_model():
+    return mahi_mlp_pickle.load_model()
 
 
 # Main Content
@@ -139,14 +166,28 @@ with col2:
                 prediction = None
                 confidence = 0.0
                 
-                if "Mahi - CNN" in model_choice:
-                    model = load_mahi_model()
+                if "Mahi - CNN Raw" == model_choice:
+                    model = load_mahi_cnn_raw_model()
                     if model:
-                        prediction, confidence = mahi_model.predict_single(model, image_path)
+                        prediction, confidence = mahi_cnn_raw.predict_single(model, image_path)
                     else:
-                        st.error("Could not load Mahi's CNN model.")
+                        st.error("Could not load Mahi's CNN Raw model.")
+
+                elif "Mahi - CNN Pickle" == model_choice:
+                    model = load_mahi_cnn_pickle_model()
+                    if model:
+                        prediction, confidence = mahi_cnn_pickle.predict_single(model, image_path)
+                    else:
+                        st.error("Could not load Mahi's CNN Pickle model.")
                 
-                elif "Mahi - MLP" in model_choice:
+                elif "Mahi - MLP Pickle" == model_choice:
+                    model = load_mahi_mlp_pickle_model()
+                    if model:
+                         prediction, confidence = mahi_mlp_pickle.predict_single(model, image_path)
+                    else:
+                        st.error("Could not load Mahi's MLP Pickle model.")
+
+                elif "Mahi - MLP MNIST" == model_choice:
                     model = load_mahi_mlp_model()
                     if model:
                          prediction, confidence = mahi_mlp.predict_single(model, image_path)
@@ -192,16 +233,32 @@ st.markdown("---")
 st.header("Model Performance & Statistics")
 
 
-if "Mahi - CNN" in model_choice:
-    st.markdown("### Mahi's Model Results (CNN)")
-    cm_path = "Mahi/results/cnn_mnist/confusion_matrix.png"
+if "Mahi - CNN Raw" == model_choice:
+    st.markdown("### Mahi's Model Results (CNN Raw)")
+    cm_path = "Mahi/results/cnn_raw/confusion_matrix.png"
     if os.path.exists(cm_path):
-        st.image(cm_path, caption="Confusion Matrix", width=600)
+         st.image(cm_path, caption="Confusion Matrix", width=600)
     else:
-        st.info(f"Confusion Matrix not found in path ({cm_path}).")
+         st.info("No pre-generated confusion matrix found for this model.")
 
-elif "Mahi - MLP" in model_choice:
-    st.markdown("### Mahi's Model Results (MLP)")
+elif "Mahi - CNN Pickle" == model_choice:
+    st.markdown("### Mahi's Model Results (CNN Pickle)")
+    cm_path = "Mahi/results/cnn_pickle/confusion_matrix.png"
+    if os.path.exists(cm_path):
+         st.image(cm_path, caption="Confusion Matrix", width=600)
+    else:
+         st.info("No pre-generated confusion matrix found for this model.")
+
+elif "Mahi - MLP Pickle" == model_choice:
+    st.markdown("### Mahi's Model Results (MLP Pickle)")
+    cm_path = "Mahi/results/mlp_pickle/confusion_matrix.png" 
+    if os.path.exists(cm_path):
+         st.image(cm_path, caption="Confusion Matrix", width=600)
+    else:
+         st.info("No pre-generated confusion matrix found for this model.")
+
+elif "Mahi - MLP MNIST" == model_choice:
+    st.markdown("### Mahi's Model Results (MLP MNIST)")
     cm_path = "Mahi/results/mlp_mnist/confusion_matrix.png"
     if os.path.exists(cm_path):
          st.image(cm_path, caption="Confusion Matrix", width=600)
@@ -217,23 +274,78 @@ elif "Mahi - Random Forest" in model_choice:
          st.info(f"Confusion Matrix not found in path ({cm_path}).")
 
 elif "Oyshe" in model_choice:
-
     st.markdown("### Oyshe's Model Results (HOG + Logistic Regression)")
-    # Oyshe likely saves to Oyshe/results or root results based on script
-    cm_path_1 = "Oyshe/results/confusion_matrix.png"
-    cm_path_2 = "results/confusion_matrix.png" 
-    
-    if os.path.exists(cm_path_1):
-        st.image(cm_path_1, caption="Confusion Matrix", width=600)
-    elif os.path.exists(cm_path_2):
-        st.image(cm_path_2, caption="Confusion Matrix", width=600)
+    # Path updated to specific folder
+    cm_path = "Oyshe/results/confusion_matrix.png"
+    if os.path.exists(cm_path):
+        st.image(cm_path, caption="Confusion Matrix", width=600)
     else:
-        st.info("Confusion Matrix not found.")
+        st.info("Confusion Matrix not found. (Run Oyshe/prediction.py first)")
 
 elif "Jere" in model_choice:
     st.markdown("### Jere's Model Results (CNN)")
+    # Path updated to specific folder
     cm_path = "Jere/results/confusion_matrix.png"
     if os.path.exists(cm_path):
         st.image(cm_path, caption="Confusion Matrix", width=600)
     else:
         st.info(f"Confusion Matrix not found in 'Jere/results/'. ({cm_path})")
+
+# Model Description Section
+st.markdown("---")
+st.header("Model Description")
+
+description = ""
+if "Mahi - CNN Raw" == model_choice:
+    description = """
+    **Architecture**: Simple CNN
+    - **Layers**: 2 Conv Layers (16/32), MaxPool, FC(128) -> FC(10).
+    - **Input**: 28x28 Raw Images (Inverted/Thresholded).
+    - **Training**: Trained on raw/processed image data.
+    """
+elif "Mahi - CNN Pickle" == model_choice:
+    description = """
+    **Architecture**: Simple CNN (Deeper)
+    - **Layers**: 2 Conv blocks (32 filters), 2 Conv blocks (64 filters), Dropout.
+    - **Structure**: More complex feature extraction than raw model.
+    - **Input**: 32x32 Resized Images.
+    """
+elif "Mahi - MLP MNIST" == model_choice:
+    description = """
+    **Architecture**: Multi-Layer Perceptron (MLP)
+    - **Layers**: Input Flatten -> Dense(512) -> Dense(256) -> Output(10).
+    - **Regularization**: Dropout (0.2).
+    - **Training**: Standard MNIST.
+    """
+elif "Mahi - MLP Pickle" == model_choice:
+    description = """
+    **Architecture**: Multi-Layer Perceptron (MLP)
+    - **Layers**: Dense(256) -> Dense(128) -> Dense(64) -> Output(10).
+    - **Features**: Batch Normalization usage.
+    - **Input**: 32x32 Flattened.
+    """
+elif "Mahi - Random Forest" in model_choice:
+    description = """
+    **Architecture**: Random Forest Classifier
+    - **Type**: Ensemble Learning method using multiple Decision Trees.
+    - **Input**: Flattened 28x28 normalized images.
+    - **Advantages**: Explainable, handles non-linear data well, robust to overfitting.
+    """
+elif "Oyshe" in model_choice:
+    description = """
+    **Architecture**: HOG + Logistic Regression
+    - **Feature Extraction**: Histogram of Oriented Gradients (HOG) captures edge directions/shapes.
+    - **Classifier**: Logistic Regression (Linear Classifier).
+    - **Pipeline**: Image -> Resize/Invert -> Compute HOG -> Classify.
+    - **Purpose**: classic computer vision technique, effective for simple shapes like digits.
+    """
+elif "Jere" in model_choice:
+    description = """
+    **Architecture**: Simple CNN
+    - **Structure**: 2 Conv Layers -> MaxPool -> 2 Fully Connected Layers.
+    - **Optimizer**: Adam.
+    - **Loss Function**: Cross Entropy Loss.
+    - **Training**: Standard MNIST training pipeline (Epochs: 10).
+    """
+
+st.info(description)
