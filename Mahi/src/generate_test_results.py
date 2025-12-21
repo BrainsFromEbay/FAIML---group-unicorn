@@ -71,28 +71,7 @@ class SimpleDigitCNN(nn.Module):
         x = self.classifier(x)
         return x
 
-class FinalCNN_MNIST(nn.Module):
-    def __init__(self):
-        super(FinalCNN_MNIST, self).__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(1, 16, 3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(16, 32, 3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, 2)
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(32 * 7 * 7, 128),
-            nn.ReLU(inplace=True),
-            nn.Dropout(0.25),
-            nn.Linear(128, 10)
-        )
-    def forward(self, x):
-        x = self.features(x)
-        x = self.classifier(x)
-        return x
+
 
 class SimpleMLP(nn.Module):
     def __init__(self, input_size=32*32, num_classes=10):
@@ -170,20 +149,7 @@ def preprocess_pickle_mlp(path):
     img_normalized = img_flat.astype(np.float32) / 255.0
     return torch.tensor(img_normalized).unsqueeze(0).to(DEVICE)
 
-def preprocess_mnist_cnn(path):
-    # Resize 28x28, Invert if mean>127, (x-0.5)/0.5
-    try:
-        image = Image.open(path).convert("L")
-        image = image.resize((28, 28), Image.BILINEAR)
-        img_arr = np.array(image)
-        if img_arr.mean() > 127:
-            img_arr = 255 - img_arr
-        img_arr = img_arr.astype(np.float32) / 255.0
-        img_arr = (img_arr - 0.5) / 0.5
-        img_tensor = torch.tensor(img_arr).unsqueeze(0).unsqueeze(0)
-        return img_tensor.to(DEVICE)
-    except:
-        return None
+
 
 def preprocess_mnist_mlp(path):
     # Same as CNN MNIST but potentially flat handled by model, wait model has flatten.
@@ -310,14 +276,7 @@ def main():
     except Exception as e:
         print(f"Skipping CNN Pickle: {e}")
 
-    # 3. CNN MNIST
-    try:
-        model = FinalCNN_MNIST().to(DEVICE)
-        model.load_state_dict(torch.load('Mahi/src/models/CNN_mnist.pth', map_location=DEVICE))
-        model.eval()
-        evaluate_model('cnn_mnist', model, preprocess_mnist_cnn)
-    except Exception as e:
-        print(f"Skipping CNN MNIST: {e}")
+
 
     # 4. MLP Pickle
     try:

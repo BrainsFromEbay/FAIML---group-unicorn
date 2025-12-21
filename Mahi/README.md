@@ -124,8 +124,6 @@ Located in `Mahi/src/train_script/`.
 
 #### C. From MNIST Data (28x28) - **Recommended**
 These models generalize best to external handwritten digits (`custom_test`).
-- **`CNN_mnist.py`**: Trains a CNN on the official MNIST dataset.
-    - **Output**: `Mahi/src/models/cnn_mnist.pth`.
 - **`MLP_mnist.py`**: Trains an MLP on the official MNIST dataset.
     - **Output**: `Mahi/src/models/mlp_mnist.pth`.
 - **`random_forrest_mnist.py`**: Trains a Random Forest on the official MNIST dataset.
@@ -140,7 +138,7 @@ Each training script has a corresponding inference script to test the model on t
 
 - **For Raw Models**: `cnn_raw_inference.py`.
 - **For Pickle Models**: `cnn_pickle_inference.py`, `mlp_pickle_inference.py`, `rf_inference.py`.
-- **For MNIST Models**: `cnn_mnist_inference.py`, `mlp_mnist_inference.py`, `rf_mnist_inference.py`.
+- **For MNIST Models**: `mlp_mnist_inference.py`, `rf_mnist_inference.py`.
 
 ---
 
@@ -167,8 +165,8 @@ All models were re-evaluated on the `custom_test` dataset (20 images: 10 'normal
 
 ## Prediction Matrix (Full Test Set)
 
-| Image | Exp | CNN Raw | CNN Pickle | CNN MNIST | MLP Pickle | MLP MNIST | RF Pickle | RF MNIST |
-| :---: | :-: | :-----: | :--------: | :-------: | :--------: | :-------: | :-------: | :------: |
+| Image | Exp | CNN Raw | CNN Pickle | MLP Pickle | MLP MNIST | RF Pickle | RF MNIST |
+| :---: | :-: | :-----: | :--------: | :--------: | :-------: | :-------: | :------: |
 | 0(1).png | 0 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
 | 0.png    | 0 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 2 ❌ | 0 ✅ |
 | 1(1).png | 1 | 9 ❌ | 1 ✅ | 1 ✅ | 4 ❌ | 1 ✅ | 7 ❌ | 3 ❌ |
@@ -195,7 +193,7 @@ All models were re-evaluated on the `custom_test` dataset (20 images: 10 'normal
 | Rank | Model Script | Correct | Total | Accuracy |
 | :--: | :--- | :-----: | :---: | :------: |
 | 1 | `cnn_raw_inference.py` | 17 | 20 | **85.0%** |
-| 2 | `cnn_mnist_inference.py` | 16 | 20 | **80.0%** |
+
 | 2 | `cnn_pickle_inference.py` | 16 | 20 | **80.0%** |
 | 4 | `mlp_mnist_inference.py` | 15 | 20 | **75.0%** |
 | 5 | `mlp_pickle_inference.py` | 14 | 20 | **70.0%** |
@@ -204,13 +202,13 @@ All models were re-evaluated on the `custom_test` dataset (20 images: 10 'normal
 
 ## Analysis
 
-1.  **Top Performers**: `CNN Raw` remains the champion (**85%**), but `CNN Pickle` and `CNN MNIST` are surprisingly close runners-up (**80%**).
+1.  **Top Performers**: `CNN Raw` remains the champion (**85%**), with `CNN Pickle` as a strong runner-up (**80%**).
     - **Note on CNN Pickle**: It performed **perfectly** on the 10 "noisy" `(1).png` images, even though it struggled with some clean ones. This suggests the "noise" (preprocessing artifact) might actually match the distribution of the pickled training data better.
 2.  **Noisy Images**: Most models handled the `(1).png` images very well, often better than the clean ones. This might be due to the thresholding/inversion preprocessing steps aligning better with how the models were trained (especially for `Pickle` models).
 3.  **Specific Digits**:
-    - **'0'**: `CNN Pickle`, `CNN Raw`, `CNN MNIST`, and `MLP Pickle` all nailed '0' perfectly across both variants.
+    - **'0'**: `CNN Pickle`, `CNN Raw`, and `MLP Pickle` all nailed '0' perfectly across both variants.
     - **'4'**: Extremely difficult. `MLP Pickle` was the **only** model to correctly identify the clean `4.png`. `CNN Raw` and others consistently failed on it.
-    - **'1(1)'**: `CNN Raw` oddly failed on this (predicted 9), while `CNN Pickle` and `CNN MNIST` got it right.
+    - **'1(1)'**: `CNN Raw` oddly failed on this (predicted 9), while `CNN Pickle` got it right.
 
 ## Conclusion
 

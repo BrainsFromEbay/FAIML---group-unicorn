@@ -8,7 +8,7 @@ This project explores various machine learning approaches for handwritten digit 
 
 The project is organized by team member:
 
-- **[Mahi](Mahi/README.md)**: Explored a wide range of models (CNN, MLP, Random Forest) trained on three different data sources (Raw, Pickle, MNIST). Established the comprehensive benchmarking standards.
+- **[Mahi](Mahi/README.md)**: Explored a wide range of models (CNN, MLP, Random Forest) trained on various data sources. Established the comprehensive benchmarking standards.
 - **[Jere](Jere/README.md)**: Implemented a SimpleCNN trained on the official MNIST dataset, bypassing download restrictions by using local data.
 - **[Oyshe](Oyshe/README.md)**: Implemented a classic Computer Vision approach using HOG (Histogram of Oriented Gradients) feature extraction coupled with Logistic Regression.
 

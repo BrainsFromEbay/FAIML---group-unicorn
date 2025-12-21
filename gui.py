@@ -11,10 +11,7 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import Models
-try:
-    import Mahi.src.inference.cnn_mnist_inference as mahi_model
-except ImportError as e:
-    st.error(f"Failed to import Mahi's User module: {e}")
+
 
 try:
     import Oyshe.prediction as oyshe_model
@@ -77,9 +74,7 @@ with st.sidebar:
     st.write("Current Working Directory:", os.getcwd())
 
 # Helper to load models (Lazy Loading)
-@st.cache_resource
-def load_mahi_model():
-    return mahi_model.load_model()
+
 
 @st.cache_resource
 def load_oyshe_model():
