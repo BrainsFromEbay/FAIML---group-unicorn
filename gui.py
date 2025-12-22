@@ -6,6 +6,7 @@ from PIL import Image
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+from streamlit_drawable_canvas import st_canvas
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,7 +18,6 @@ import Mahi.src.inference.rf_mnist_inference as mahi_rf
 import Mahi.src.inference.cnn_raw_inference as mahi_cnn_raw
 import Mahi.src.inference.cnn_pickle_inference as mahi_cnn_pickle
 import Mahi.src.inference.mlp_pickle_inference as mahi_mlp_pickle
-
 
 # page configuration
 st.set_page_config(
@@ -77,14 +77,15 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.subheader("Input Image")
     
-    upload_option = st.radio("Input Method", ["Upload Image", "Select from Folder"])
+    upload_option = st.radio("Input Method", ["Upload Image", "Select from Folder", "Draw Digit"])
     
     image_path = None
     uploaded_file = None
     
     if upload_option == "Upload Image":
         uploaded_file = st.file_uploader("Upload a digit image (PNG, JPG)", type=["png", "jpg", "jpeg"])
-    else:
+    elif upload_option == "Select from Folder":
+        # Allow user to input folder path directly
         folder_path = st.text_input("Enter folder path", value="", placeholder="e.g., custom_test")
         
         if folder_path:
@@ -100,8 +101,26 @@ with col1:
                 st.error(f"Directory '{folder_path}' not found.")
         else:
             st.info("Please enter a folder path to browse images.")
+    elif upload_option == "Draw Digit":
+        st.write("Draw a digit (0-9) below:")
 
+        canvas_result = st_canvas(
+            fill_color="black",
+            stroke_width=15,
+            stroke_color="white",
+            background_color="black",
+            height=280,
+            width=280,
+            drawing_mode="freedraw",
+            key="canvas",
+        )
 
+        if canvas_result.image_data is not None:
+            img = Image.fromarray(canvas_result.image_data.astype("uint8"))
+            img = img.convert("L")
+
+            image_path = "drawn_digit.png"
+            img.save(image_path)
 
     # Display the selected image.
     image = None

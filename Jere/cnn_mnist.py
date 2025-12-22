@@ -15,9 +15,8 @@ batch_size = 64
 learning_rate = 0.001
 num_epochs = 10
 
-folder_path = r"letterRecognition/digits"
-image_paths = glob.glob(os.path.join(folder_path, "*.png"))
-
+# Data augmentation and normalization for training
+# Augmentation helps improve model generalization
 transform = transforms.Compose([
     transforms.RandomAffine(
         degrees=15,
@@ -28,6 +27,7 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
+# Load the MNIST training dataset
 train_dataset = datasets.MNIST(
     root="./data",
     train=True,
@@ -35,6 +35,7 @@ train_dataset = datasets.MNIST(
     download=False
 )
 
+# Load the MNIST test dataset
 test_dataset = datasets.MNIST(
     root="./data",
     train=False,
@@ -54,7 +55,11 @@ test_loader = DataLoader(
     shuffle=True
 )
 
+# Define the CNN model
 class SimpleCNN(nn.Module):
+    # A simple Convolutional Neural network for MNIST digit classification
+    # It consists of two conlvolutional layers and two fully connected layers
+    # Dropout for regularization
     def __init__(self):
         super(SimpleCNN, self).__init__()
 
@@ -82,14 +87,16 @@ class SimpleCNN(nn.Module):
 
 model = SimpleCNN().to(device)
 
-if os.path.exists("cnn_mnist.pth"):
-    model.load_state_dict(torch.load("cnn_mnist.pth"))
+# Load existing model to avoid retraining every time
+if os.path.exists("Jere/cnn_mnist.pth"):
+    model.load_state_dict(torch.load("Jere/cnn_mnist.pth"))
     model.eval()
     print("Loaded saved model")
     TRAIN = False
 else:
     TRAIN = True
 
+# Training loop
 if TRAIN:
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
@@ -118,9 +125,10 @@ if TRAIN:
 
         print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {avg_loss:.4f}")
 
-    torch.save(model.state_dict(), "cnn_mnist.pth")
-    print("Model saved to cnn_mnist.pth")
+    torch.save(model.state_dict(), "Jere/cnn_mnist.pth")
+    print("Model saved to Jere/cnn_mnist.pth")
 
+# Evaluate on test set
 if TRAIN:
     model.eval()
     correct = 0
@@ -140,6 +148,7 @@ if TRAIN:
     accuracy = 100 * correct / total
     print(f"Test Accuracy: {accuracy:.2f}%")
 
+# Training loss visualization
 if TRAIN:
     plt.plot(train_losses)
     plt.xlabel("Epoch")

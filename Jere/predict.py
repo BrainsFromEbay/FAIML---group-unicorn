@@ -8,8 +8,10 @@ import glob
 from sklearn.metrics import confusion_matrix, accuracy_score
 import seaborn as sns
 
+# Device configuration (I really hope you have a GPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# CNN architecture. Matches the training one.
 class SimpleCNN(nn.Module):
     def __init__(self):
         super(SimpleCNN, self).__init__()
@@ -36,6 +38,11 @@ class SimpleCNN(nn.Module):
 
         return x
     
+# Image preprocessing
+# Preprocess input image to match MNIST format:
+# - Grayscale
+# - Resize to 28x28
+# - Normalized 
 def preprocess_image(image_path):
     image = Image.open(image_path).convert("L")
     image = image.resize((28, 28), Image.BILINEAR)
@@ -52,6 +59,7 @@ def preprocess_image(image_path):
     
     return image
 
+# Predict digit from image
 def predict_image(image_path, model, device, show_image=True):
     model.eval()
     image = preprocess_image(image_path)
@@ -130,9 +138,6 @@ def predict_custom_test(model, device):
     plt.close()
     
     return results, accuracy
-    
-    return results, accuracy
-
 
 def load_model(model_path="cnn_mnist.pth", base_path="Jere"):
     if not os.path.exists(model_path):
@@ -154,8 +159,6 @@ def load_model(model_path="cnn_mnist.pth", base_path="Jere"):
     print(f"Loaded saved model from {model_path}")
 
     return model
-
-
 
 if __name__ == "__main__":
     try:
