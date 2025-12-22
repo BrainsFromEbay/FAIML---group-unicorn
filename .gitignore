@@ -1,5 +1,3 @@
-Mahi/src/digits_data.pickle
-Mahi/src/digits_data_cleaned.pickle
 Mahi/src/models/rf.joblib
 Mahi/src/models/rf_mnist.joblib
 data/
