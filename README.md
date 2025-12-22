@@ -20,6 +20,10 @@ We have built a **Streamlit GUI** (`gui.py`) that unifies all the models into a 
 
 ### 📦 Installation
 
+First of all please download rf_mnist.joblib file from this [link](https://drive.google.com/file/d/1bevNLagSOjP-m3auP7qSJ6TyaqocUBla/view?usp=sharing) and place it in this location "Mahi/src/models/rf_mnist.joblib".
+
+Additionaly you can download the pickle data from this [link](https://drive.google.com/file/d/1JJ9WHbLCZDNVymFtcXM1cAB6A6tGdMk6/view?usp=sharing) and place in "Mahi/src/data_preprocessing/digits_data.pickle" and run the script "Mahi/src/data_preprocessing/pickle_clean.py" to generate digits_data_cleaned.pickle file. This file is used for training the models.
+
 To replicate the environment, you can install the dependencies using `pip` or `conda`.
 
 ### Using pip
