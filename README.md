@@ -2,15 +2,15 @@
 
 ## Project Overview
 
-This project explores various machine learning approaches for handwritten digit recognition, specifically targeting a custom dataset (`custom_test`) containing both clean and noisy images. The team explored different architectures (CNNs, MLPs, Random Forests, Logistic Regression) and training data sources (Raw Images, Pickled Data, MNIST).
+This project explores various machine learning approaches for handwritten digit recognition, specifically targeting english digits from 0 to 9. We have explored different architectures (CNNs, MLPs, Random Forests, Logistic Regression) and training data sources (Raw Images, Pickled Data, MNIST).
 
 ## Team Contributions
 
 The project is organized by team member:
 
-- **[Mahi](Mahi/README.md)**: Explored a wide range of models (CNN, MLP, Random Forest) trained on various data sources. Established the comprehensive benchmarking standards.
-- **[Jere](Jere/README.md)**: Implemented a SimpleCNN trained on the official MNIST dataset, bypassing download restrictions by using local data.
-- **[Oyshe](Oyshe/README.md)**: Implemented a classic Computer Vision approach using HOG (Histogram of Oriented Gradients) feature extraction coupled with Logistic Regression.
+- **[Mahi](Mahi/README.md)**: Explored a wide range of models (CNN, MLP, Random Forest) trained on an open data source found in kaggle [(see the datasethere)](https://www.kaggle.com/datasets/vaibhao/handwritten-characters). Followed two different approaches to train the models, one using raw images and the other using binary pickled data by preprocessing the raw images.
+- **[Jere](Jere/README.md)**: Implemented a SimpleCNN trained on the official MNIST dataset available in pytorch. This is the best performing model in terms of generalization.
+- **[Oyshe](Oyshe/README.md)**: Implemented a classic Computer Vision approach using HOG (Histogram of Oriented Gradients) feature extraction coupled with Logistic Regression. This is model is also trained on the MNIST dataset.
 
 ---
 
@@ -18,21 +18,7 @@ The project is organized by team member:
 
 We have built a **Streamlit GUI** (`gui.py`) that unifies all the models into a single interface. You can upload an image or select a folder to test predictions in real-time.
 
-1.  **Run the App**:
-    ```bash
-    streamlit run gui.py
-    ```
-2.  **Features**:
-    *   **Model Selection**: Choose from a wide variety of models:
-        *   **Mahi**: CNN Raw, CNN Pickle, MLP MNIST, MLP Pickle, Random Forest.
-        *   **Oyshe**: HOG + Logistic Regression.
-        *   **Jere**: Simple CNN.
-    *   **Input**: Upload an image or point to a local folder (e.g., `custom_test`).
-    *   **Results**: View real-time predictions with confidence scores.
-    *   **Model Description**: See detailed architecture and training info for the selected model.
-    *   **Performance**: View pre-calculated confusion matrices for *every* model.
-
-## 📦 Installation
+### 📦 Installation
 
 To replicate the environment, you can install the dependencies using `pip` or `conda`.
 
@@ -47,12 +33,28 @@ conda env create -f environment.yml
 conda activate thesis
 ```
 
+1.  **Run the App**:
+    ```bash
+    streamlit run gui.py
+    ```
+2.  **Features**:
+    *   **Model Selection**: Choose from a wide variety of models:
+        *   **Mahi**: CNN Raw, CNN Pickle, MLP MNIST, MLP Pickle, Random Forest.
+        *   **Oyshe**: HOG + Logistic Regression.
+        *   **Jere**: Simple CNN.
+    *   **Input**: Upload an image or point to a local folder. You can type relative path to the folder if its inside the project directory. The path should be relative to the project root directory. If the folder is outside of the project directory, you can type the absolute path to the folder. (e.g., `custom_test`).
+    *   **Results**: View real-time predictions with confidence scores.
+    *   **Model Description**: See detailed architecture and training info for the selected model.
+    *   **Performance**: View pre-calculated confusion matrices for *every* model.
+
+
+
 ---
 
 
 # Unified Model Performance Leaderboard
 
-All models were evaluated on the same `custom_test` dataset (20 images).
+We have tested all of the models on the same `custom_test` dataset (20 images). These images are outside of the training and validation datasets. We custom made these images. 
 
 | Rank | Team Member | Model Variant | Architecture | Training Data | Accuracy |
 | :--: | :---------- | :------------ | :----------- | :------------ | :------- |
@@ -65,19 +67,11 @@ All models were evaluated on the same `custom_test` dataset (20 images).
 | 7 | Mahi | Random Forest | RF | Pickled Data | 45.0% |
 | 8 | Mahi | Random Forest | RF | MNIST | 40.0% |
 
-## Consolidated Analysis
 
-1.  **CNN Supremacy**: Convolutional Neural Networks (CNNs) consistently outperformed other architectures (MLP, RF, LogReg), occupying the top spots with accuracies between 80-85%.
-2.  **Data Source Impact**:
-    - **Raw Images**: Surprisingly, Mahi's CNN trained on raw images tied for first place (85%), suggesting the raw data distribution closely matches the `custom_test` set.
-    - **MNIST**: Models trained on MNIST (Jere's SimpleCNN) were very robust (85%), proving that standard MNIST is a great proxy for this task.
-    - **Feature Engineering**: Oyshe's HOG + Logistic Regression (60%) outperformed Random Forests (40-45%), showing that manual feature extraction can better capture shape properties than raw pixel-based tree methods when deep learning isn't used.
-3.  **The "Digit 4" Problem**: A recurring theme across almost all models was the difficulty in correctly classifying the digit '4', often mistaking it for '1' or '7'.
-4.  **Noise Robustness**: Several models showed surprisingly good performance on "noisy" images (ending in `(1).png`), sometimes even better than on clean images.
 
 ## Detailed Reports
 
-For detailed per-image prediction matrices, confusion matrices, and code, please refer to the individual directories:
+For more details, please refer to the individual directories:
 
 - [Mahi/README.md](Mahi/README.md)
 - [Jere/README.md](Jere/README.md)

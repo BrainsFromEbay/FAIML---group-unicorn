@@ -7,12 +7,9 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
-# Ensure root directory is in sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import Models
-
-
+# Here we import all the models.
 try:
     import Oyshe.prediction as oyshe_model
 except ImportError as e:
@@ -50,7 +47,7 @@ except ImportError as e:
     st.error(f"Failed to import Mahi's MLP Pickle module: {e}")
 
 
-# PageConfig
+# page configuration
 st.set_page_config(
     page_title="FAIML Digit Recognition",
     page_icon="🔢",
@@ -68,12 +65,10 @@ with st.sidebar:
         ("Mahi - CNN Raw", "Mahi - CNN Pickle", "Mahi - MLP MNIST", "Mahi - MLP Pickle", "Mahi - Random Forest", "Oyshe - HOG + Logistic Regression", "Jere - CNN")
     )
     
-    st.info(f"You selected: **{model_choice}**")
+    st.info(f"You have selected: **{model_choice}**")
     
     st.markdown("---")
     st.write("Current Working Directory:", os.getcwd())
-
-# Helper to load models (Lazy Loading)
 
 
 @st.cache_resource
@@ -82,7 +77,6 @@ def load_oyshe_model():
 
 @st.cache_resource
 def load_jere_model():
-    # Use Jere folder as base path
     return jere_model.load_model(base_path="Jere")
 
 @st.cache_resource
@@ -106,7 +100,6 @@ def load_mahi_mlp_pickle_model():
     return mahi_mlp_pickle.load_model()
 
 
-# Main Content
 col1, col2 = st.columns([1, 1])
 
 with col1:
@@ -120,12 +113,11 @@ with col1:
     if upload_option == "Upload Image":
         uploaded_file = st.file_uploader("Upload a digit image (PNG, JPG)", type=["png", "jpg", "jpeg"])
     else:
-        # Allow user to input folder path directly
         folder_path = st.text_input("Enter folder path", value="", placeholder="e.g., custom_test")
         
         if folder_path:
             if os.path.isdir(folder_path):
-                files = sorted([f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
+                files = sorted([f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]) #sorting the files inside the selected folder. also verifying input type.
                 if files:
                     selected_file = st.selectbox("Select an image", files)
                     if selected_file:
@@ -139,7 +131,7 @@ with col1:
 
 
 
-    # Display Image
+    # Display the selected image.
     image = None
     if uploaded_file:
         image = Image.open(uploaded_file)
@@ -200,30 +192,26 @@ with col2:
 
                     weights, bias = load_oyshe_model()
                     prediction, confidence = oyshe_model.predict_digit(image_path, weights, bias)
-                    confidence = confidence * 100 # Adjust to percentage
+                    confidence = confidence * 100
                     
                 elif "Jere" in model_choice:
                     model = load_jere_model()
-                    # Jere's predict uses GPU/device logic internally, need to reference `jere_model.device`
                     prediction, confidence = jere_model.predict_image(image_path, model, jere_model.device, show_image=False)
                 
                 if prediction is not None:
                     st.success(f"**Predicted Digit:** {prediction}")
                     st.metric("Confidence", f"{confidence:.2f}%")
-                    
-                    if confidence < 50:
-                        st.warning("Low confidence alert!")
                 
             except Exception as e:
                 st.error(f"An error occurred during prediction: {e}")
                 import traceback
                 st.text(traceback.format_exc())
                 
-                # Clean up temp file
+                # here we delete the temporary image file.
                 if uploaded_file and os.path.exists("temp_image.png"):
                     os.remove("temp_image.png")
 
-# Performance Metrics Section
+# Model statistics and information
 st.markdown("---")
 st.header("Model Performance & Statistics")
 
@@ -270,7 +258,6 @@ elif "Mahi - Random Forest" in model_choice:
 
 elif "Oyshe" in model_choice:
     st.markdown("### Oyshe's Model Results (HOG + Logistic Regression)")
-    # Path updated to specific folder
     cm_path = "Oyshe/results/confusion_matrix.png"
     if os.path.exists(cm_path):
         st.image(cm_path, caption="Confusion Matrix", width=600)
@@ -279,14 +266,12 @@ elif "Oyshe" in model_choice:
 
 elif "Jere" in model_choice:
     st.markdown("### Jere's Model Results (CNN)")
-    # Path updated to specific folder
     cm_path = "Jere/results/confusion_matrix.png"
     if os.path.exists(cm_path):
         st.image(cm_path, caption="Confusion Matrix", width=600)
     else:
         st.info(f"Confusion Matrix not found in 'Jere/results/'. ({cm_path})")
 
-# Model Description Section
 st.markdown("---")
 st.header("Model Description")
 
@@ -295,35 +280,43 @@ if "Mahi - CNN Raw" == model_choice:
     description = """
     **Architecture**: Simple CNN
     - **Layers**: 2 Conv Layers (16/32), MaxPool, FC(128) -> FC(10).
-    - **Input**: 28x28 Raw Images (Inverted/Thresholded).
-    - **Training**: Trained on raw/processed image data.
+    - **Input**: 28x28 Raw Images.
+    - **Training**: Trained on raw images from an open [kaggle dataset](https://www.kaggle.com/datasets/vaibhao/handwritten-characters).
     """
 elif "Mahi - CNN Pickle" == model_choice:
     description = """
     **Architecture**: Simple CNN (Deeper)
     - **Layers**: 2 Conv blocks (32 filters), 2 Conv blocks (64 filters), Dropout.
     - **Structure**: More complex feature extraction than raw model.
-    - **Input**: 32x32 Resized Images.
-    """
+    - **Input**: Raw images were downloaded  from an open [kaggle dataset](https://www.kaggle.com/datasets/vaibhao/handwritten-characters).
+        Here the images were resized to the original 32x32 pixel size. 
+        Then only the intensity value of each pixel is used to form an array of 32x32. 
+        To separate the background from the digit any pixel density less than 50 was turned to 0. 
+        Then a pickle file was created with these arrays along with its labels which was used to train the model for faster training.
+     """
 elif "Mahi - MLP MNIST" == model_choice:
     description = """
     **Architecture**: Multi-Layer Perceptron (MLP)
     - **Layers**: Input Flatten -> Dense(512) -> Dense(256) -> Output(10).
     - **Regularization**: Dropout (0.2).
-    - **Training**: Standard MNIST.
+    - **Training**: Standard MNIST from pytorch.
     """
 elif "Mahi - MLP Pickle" == model_choice:
     description = """
     **Architecture**: Multi-Layer Perceptron (MLP)
     - **Layers**: Dense(256) -> Dense(128) -> Dense(64) -> Output(10).
     - **Features**: Batch Normalization usage.
-    - **Input**: 32x32 Flattened.
+    - **Input**: Raw images were downloaded  from an open [kaggle dataset](https://www.kaggle.com/datasets/vaibhao/handwritten-characters).
+        Here the images were resized to the original 32x32 pixel size. 
+        Then only the intensity value of each pixel is used to form an array of 32x32. 
+        To separate the background from the digit any pixel density less than 50 was turned to 0. 
+        Then a pickle file was created with these arrays along with its labels which was used to train the model for faster training.
     """
 elif "Mahi - Random Forest" in model_choice:
     description = """
     **Architecture**: Random Forest Classifier
     - **Type**: Ensemble Learning method using multiple Decision Trees.
-    - **Input**: Flattened 28x28 normalized images.
+    - **Input**: Flattened 28x28 normalized images. Standard MNIST dataset from pytorch.
     - **Advantages**: Explainable, handles non-linear data well, robust to overfitting.
     """
 elif "Oyshe" in model_choice:
@@ -333,6 +326,7 @@ elif "Oyshe" in model_choice:
     - **Classifier**: Logistic Regression (Linear Classifier).
     - **Pipeline**: Image -> Resize/Invert -> Compute HOG -> Classify.
     - **Purpose**: classic computer vision technique, effective for simple shapes like digits.
+    - **Input**: Standard MNIST dataset from pytorch.
     """
 elif "Jere" in model_choice:
     description = """
@@ -341,6 +335,7 @@ elif "Jere" in model_choice:
     - **Optimizer**: Adam.
     - **Loss Function**: Cross Entropy Loss.
     - **Training**: Standard MNIST training pipeline (Epochs: 10).
+    - **Input**: Standard MNIST dataset from pytorch.
     """
 
 st.info(description)
