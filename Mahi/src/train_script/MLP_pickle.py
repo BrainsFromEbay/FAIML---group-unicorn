@@ -5,7 +5,6 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import time
-# Functionally equivalent import for compatibility, but we will use conditional logic
 from torch.cuda.amp import GradScaler, autocast as autocast_cuda
 import torchvision.transforms as transforms
 from PIL import Image
@@ -85,7 +84,6 @@ def train_epoch(model, loader, criterion, optimizer, scaler):
         
         optimizer.zero_grad()
         
-        # Use autocast only if device is CUDA, or handle properly for simple CPU run
         if DEVICE.type == 'cuda':
             with autocast_cuda():
                 outputs = model(images)
@@ -94,7 +92,6 @@ def train_epoch(model, loader, criterion, optimizer, scaler):
             scaler.step(optimizer)
             scaler.update()
         else:
-            # Regular FP32 training on CPU
             outputs = model(images)
             loss = criterion(outputs, labels)
             loss.backward()
@@ -142,7 +139,6 @@ if __name__ == '__main__':
     train_dataset = DigitsDatasetMLP(X_train, y_train, transform=train_transform)
     val_dataset = DigitsDatasetMLP(X_val, y_val, transform=None)
 
-    # Pin memory only if CUDA
     pin_mem = (DEVICE.type == 'cuda')
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=pin_mem)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=pin_mem)
@@ -150,7 +146,7 @@ if __name__ == '__main__':
     model = SimpleMLP().to(DEVICE)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
-    scaler = GradScaler() # Will be ignored on CPU path
+    scaler = GradScaler()
 
     print(model, flush=True)
     total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)

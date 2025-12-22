@@ -122,7 +122,6 @@ def main():
         
         print(f"    {filename:<20} | {pred_label:<10} | {conf_score:.1f}%")
         
-        # Calculate accuracy
         try:
             base_name = filename.split('(')[0]
             expected = int(base_name.split('.')[0])

@@ -50,11 +50,10 @@ def main():
 
 
 def load_model(model_path=MODEL_PATH):
-    # Try finding the file in several locations
     possible_paths = [
         model_path,
         os.path.join("Mahi", "src", "models", "rf_mnist.joblib"),
-        os.path.join("..", "models", "rf_mnist.joblib"), # If run from inference folder
+        os.path.join("..", "models", "rf_mnist.joblib"),
         "rf_mnist.joblib"
     ]
     
@@ -117,7 +116,6 @@ def main():
         
         print(f"{filename:<20} | {pred:<10} | {confidence:.1f}%")
         
-        # Calculate accuracy
         try:
             base_name = filename.split('(')[0]
             expected = int(base_name.split('.')[0])

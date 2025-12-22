@@ -8,7 +8,6 @@ import glob
 from sklearn.metrics import confusion_matrix, accuracy_score
 import seaborn as sns
 
-# Thoughts and prayers if you run this on a CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SimpleCNN(nn.Module):
@@ -42,7 +41,6 @@ def preprocess_image(image_path):
     image = image.resize((28, 28), Image.BILINEAR)
     image = np.array(image)
 
-    # Invert typical white-bg images to black-bg for MNIST
     if image.mean() > 127:
         image = 255 - image
 
@@ -76,7 +74,6 @@ def predict_image(image_path, model, device, show_image=True):
 def predict_custom_test(model, device):
     folder_path = "../custom_test"
     if not os.path.exists(folder_path):
-        # Fallback if running from Jere folder or root, try to find custom_test
         if os.path.exists("custom_test"):
              folder_path = "custom_test"
         elif os.path.exists("../custom_test"):
@@ -97,11 +94,10 @@ def predict_custom_test(model, device):
 
     for image_path in image_paths:
         filename = os.path.basename(image_path)
-        # Extract label from filename (assumes format '0.png', '0(1).png' start with digit)
         try:
             label = int(filename[0])
         except:
-            label = -1 # Unknown
+            label = -1
 
         prediction, confidence = predict_image(image_path, model, device, show_image=False)
         
@@ -117,11 +113,6 @@ def predict_custom_test(model, device):
     print(f"\n## Accuracy Scoreboard\n")
     print(f"**Accuracy: {accuracy*100:.1f}%** ({sum([1 for t,p in zip(true_labels, pred_labels) if t==p])}/{len(true_labels)})")
     
-    # Confusion Matrix
-    # Confusion Matrix
-    # Save to specific Jere/results folder if running from root, or local results if running from Jere
-    
-    # Determine output directory
     if os.path.basename(os.getcwd()) == "Jere":
         results_dir = "results"
     else:
@@ -145,16 +136,14 @@ def predict_custom_test(model, device):
 
 def load_model(model_path="cnn_mnist.pth", base_path="Jere"):
     if not os.path.exists(model_path):
-         # Try with base path
          alt_path = os.path.join(base_path, "cnn_mnist.pth")
          if os.path.exists(alt_path):
              model_path = alt_path
          else:
-             # Just to be safe, check if we are already in Jere
              if os.path.exists("cnn_mnist.pth"):
                  model_path = "cnn_mnist.pth"
              else:
-                pass # Let it fail if still not found
+                pass
     
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file '{model_path}' not found.")

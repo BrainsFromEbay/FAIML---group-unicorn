@@ -53,25 +53,20 @@ def load_model(model_path=MODEL_PATH_DEFAULT):
         sys.modules['__main__'].SimpleDigitCNN = SimpleDigitCNN
 
     try:
-         # Try loading with weights_only=False
         model_data = torch.load(model_path, map_location=DEVICE, weights_only=False)
     except TypeError:
-         model_data = torch.load(model_path, map_location=DEVICE)
+        model_data = torch.load(model_path, map_location=DEVICE)
     except Exception as e:
         print(f"Error loading model directly: {e}")
         return None
         
     if isinstance(model_data, nn.Module):
         model = model_data
-        # Ensure it's on the right device
         model.to(DEVICE)
     elif isinstance(model_data, dict):
         model = SimpleDigitCNN().to(DEVICE)
         model.load_state_dict(model_data)
     else:
-        # Perhaps it's just the state dict as top level object?
-        # In previous exception block attempt: "model = torch.load(..., weights_only=False)"
-        # If it was state dict, it is a dict.
         print("Unknown model format or failed to interpret loaded data.")
         return None
 
@@ -133,7 +128,6 @@ def main():
 
         print(f"{f:<20} | {pred:<10} | {conf:.1f}%")
 
-        # Calculate accuracy
         try:
             base_name = f.split('(')[0]
             expected = int(base_name.split('.')[0])

@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 
 def load_images(file_path):
     with open(file_path, "rb") as f:
-        f.read(4)  # magic
+        f.read(4)
         num = int.from_bytes(f.read(4), "big")
         rows = int.from_bytes(f.read(4), "big")
         cols = int.from_bytes(f.read(4), "big")

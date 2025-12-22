@@ -7,7 +7,6 @@ from skimage.feature import hog
 def load_model(base_path="Oyshe"):
     npz_path = os.path.join(base_path, "hog_logistic_mnist.npz")
     if not os.path.exists(npz_path):
-        # Fallback for when running directly
         npz_path = "hog_logistic_mnist.npz"
         
     data = np.load(npz_path)
@@ -56,7 +55,6 @@ import seaborn as sns
 import glob
 
 def generate_results(weights, bias):
-    # Determine base output path
     if os.path.basename(os.getcwd()) == "Oyshe":
         results_dir = "results"
         test_dir = "../custom_test"
@@ -67,7 +65,6 @@ def generate_results(weights, bias):
     os.makedirs(results_dir, exist_ok=True)
     
     if not os.path.exists(test_dir):
-         # Try local fallback
          if os.path.exists("custom_test"):
              test_dir = "custom_test"
          else:
@@ -85,7 +82,6 @@ def generate_results(weights, bias):
     for path in image_paths:
         filename = os.path.basename(path)
         try:
-             # Assumes filename starts with digit like 0.png or 0(1).png
              label = int(filename[0])
         except:
              continue
@@ -105,7 +101,6 @@ def generate_results(weights, bias):
     print("-" * 50)
     print(f"Accuracy: {acc*100:.2f}%")
     
-    # Save Confusion Matrix
     cm = confusion_matrix(y_true, y_pred, labels=list(range(10)))
     plt.figure(figsize=(10,8))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=range(10), yticklabels=range(10))
@@ -118,7 +113,6 @@ def generate_results(weights, bias):
 
 
 if __name__ == "__main__":
-    # Determine base path based on where the script is located
     base_path = os.path.dirname(os.path.abspath(__file__))
     try:
         weights, bias = load_model(base_path)

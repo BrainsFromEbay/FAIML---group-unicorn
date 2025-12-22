@@ -9,7 +9,6 @@ import numpy as np
 import os
 import glob
 
-# Thoughts and prayers if you run this on a CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 batch_size = 64
@@ -19,7 +18,6 @@ num_epochs = 10
 folder_path = r"letterRecognition/digits"
 image_paths = glob.glob(os.path.join(folder_path, "*.png"))
 
-# Convert image to tensor and normalize to [0,1]
 transform = transforms.Compose([
     transforms.RandomAffine(
         degrees=15,

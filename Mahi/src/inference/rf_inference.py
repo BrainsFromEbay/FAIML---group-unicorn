@@ -41,7 +41,6 @@ for f in sorted(files):
 
     print(f"{f:<20} | {prediction:<10} | {confidence:.1f}%")
 
-    # Calculate accuracy
     try:
         base_name = f.split('(')[0]
         expected = int(base_name.split('.')[0])

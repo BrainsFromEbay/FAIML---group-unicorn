@@ -61,17 +61,12 @@ def load_model(model_path=MODEL_PATH_DEFAULT):
 
     print(f"Loading model from {model_path}...")
     
-    # Hack to allow loading model if it was saved with class in __main__
     if 'SimpleMLP' not in sys.modules['__main__'].__dict__:
         sys.modules['__main__'].SimpleMLP = SimpleMLP
 
     try:
-        # Try loading with weights_only=False (needed for some pickles or older torch versions)
-        # Note: weights_only=False is security risk if untrusted source, but safe here.
         model_data = torch.load(model_path, map_location=DEVICE, weights_only=False)
     except TypeError:
-        # Fallback for older torch pointers where weights_only doesn't exist? 
-        # But generally 2.4+ has it default True.
         model_data = torch.load(model_path, map_location=DEVICE)
     except Exception as e:
         print(f"Error calling torch.load: {e}")
