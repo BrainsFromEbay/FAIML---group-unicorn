@@ -10,41 +10,13 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Here we import all the models.
-try:
-    import Oyshe.prediction as oyshe_model
-except ImportError as e:
-    st.error(f"Failed to import Oyshe's User module: {e}")
-
-
-try:
-    import Jere.predict as jere_model
-except ImportError as e:
-    st.error(f"Failed to import Jere's User module: {e}")
-
-try:
-    import Mahi.src.inference.mlp_mnist_inference as mahi_mlp
-except ImportError as e:
-    st.error(f"Failed to import Mahi's MLP module: {e}")
-
-try:
-    import Mahi.src.inference.rf_mnist_inference as mahi_rf
-except ImportError as e:
-    st.error(f"Failed to import Mahi's RF module: {e}")
-
-try:
-    import Mahi.src.inference.cnn_raw_inference as mahi_cnn_raw
-except ImportError as e:
-    st.error(f"Failed to import Mahi's CNN Raw module: {e}")
-
-try:
-    import Mahi.src.inference.cnn_pickle_inference as mahi_cnn_pickle
-except ImportError as e:
-    st.error(f"Failed to import Mahi's CNN Pickle module: {e}")
-
-try:
-    import Mahi.src.inference.mlp_pickle_inference as mahi_mlp_pickle
-except ImportError as e:
-    st.error(f"Failed to import Mahi's MLP Pickle module: {e}")
+import Oyshe.prediction as oyshe_model
+import Jere.predict as jere_model
+import Mahi.src.inference.mlp_mnist_inference as mahi_mlp
+import Mahi.src.inference.rf_mnist_inference as mahi_rf
+import Mahi.src.inference.cnn_raw_inference as mahi_cnn_raw
+import Mahi.src.inference.cnn_pickle_inference as mahi_cnn_pickle
+import Mahi.src.inference.mlp_pickle_inference as mahi_mlp_pickle
 
 
 # page configuration
